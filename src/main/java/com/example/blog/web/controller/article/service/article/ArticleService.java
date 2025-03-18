@@ -11,7 +11,7 @@ public class ArticleService {
 
     public Optional<ArticleEntity> findById(long id) {
 
-        Optional.of(new ArticleEntity(
+        return Optional.of(new ArticleEntity(
                 id,
                 "title",
                 "content",
