@@ -4,21 +4,21 @@ import com.example.blog.web.controller.article.service.article.ArticleEntity;
 
 import java.time.LocalDateTime;
 
-public record ArticleDTO(
+public record ArticleDTO (
         long id,
         String title,
         String content,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
-) {
+){
 
     public static ArticleDTO from(ArticleEntity entity) {
         return new ArticleDTO(
-                entity.id(),
-                entity.title(),
-                entity.content(),
-                entity.createdAt(),
-                entity.updatedAt()
-        );
+                        entity.id(),
+                        entity.title(),
+                        entity.content(),
+                        entity.createdAt(),
+                        entity.updatedAt()
+                );
     }
 }
