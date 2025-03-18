@@ -11,12 +11,13 @@ public class ArticleService {
 
     public Optional<ArticleEntity> findById(long id) {
 
-        return Optional.of(new ArticleEntity(
-                id,
-                "title",
-                "content",
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        ));
+        return Optional.of(
+                new ArticleEntity(
+                        id,
+                        "title",
+                        "content",
+                        LocalDateTime.now(),
+                        LocalDateTime.now()
+                ));
     }
 }
