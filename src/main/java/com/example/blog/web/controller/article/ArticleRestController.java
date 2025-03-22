@@ -16,7 +16,7 @@ public class ArticleRestController {
 
     @GetMapping("/articles/{id}")
     public ArticleDTO showArticle(@PathVariable long id) {
-         return articleService.findById(id)
+        return articleService.findById(id)
                 .map(ArticleDTO::from)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
