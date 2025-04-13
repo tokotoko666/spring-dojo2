@@ -6,16 +6,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.List;
 
 public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    public JsonUsernamePasswordAuthenticationFilter(SecurityContextRepository securityContextRepository) {
+        super();
+        setSecurityContextRepository(securityContextRepository);
+    }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
         return UsernamePasswordAuthenticationToken.authenticated(
-                "dummy-user"
-                , "dummy-password"
-                , List.of());
+                "dummy-user",
+                "dummy-password",
+                List.of());
     }
 }
