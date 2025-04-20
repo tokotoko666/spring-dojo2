@@ -14,7 +14,7 @@ public final class CsrfCookieFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+        var csrfToken = (CsrfToken) request.getAttribute("_csrf");
         csrfToken.getToken();
 
         filterChain.doFilter(request, response);
