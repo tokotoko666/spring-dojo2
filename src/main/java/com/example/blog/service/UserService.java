@@ -15,7 +15,7 @@ public class UserService {
 
     @Transactional
     public void register(String username, String rawPassword) {
-        String encordedPassword = passwordEncoder.encode(rawPassword);
-        userRepository.insert(username, encordedPassword, true);
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        userRepository.insert(username, encodedPassword, true);
     }
 }
