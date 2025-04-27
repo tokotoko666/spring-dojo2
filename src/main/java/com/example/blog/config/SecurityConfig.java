@@ -2,6 +2,7 @@ package com.example.blog.config;
 
 import com.example.blog.web.filter.CsrfCookieFilter;
 import com.example.blog.web.filter.JsonUsernamePasswordAuthenticationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +35,8 @@ public class SecurityConfig {
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
             SessionAuthenticationStrategy sessionAuthenticationStrategy,
-            AuthenticationManager authenticationManager) throws Exception {
+            AuthenticationManager authenticationManager,
+            ObjectMapper objectMapper) throws Exception {
         http
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -46,7 +48,8 @@ public class SecurityConfig {
                         new JsonUsernamePasswordAuthenticationFilter(
                                 securityContextRepository,
                                 sessionAuthenticationStrategy,
-                                authenticationManager),
+                                authenticationManager,
+                                objectMapper),
                         UsernamePasswordAuthenticationFilter.class)
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests((authorize) -> authorize
