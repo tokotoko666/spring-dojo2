@@ -58,7 +58,10 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler((req, res, auth) -> {
                     res.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                }));
+                }))
+                .logout(logout -> logout.logoutSuccessHandler((req, res, ex) ->
+                    res.setStatus(HttpServletResponse.SC_OK)
+                ));
 
         return http.build();
     }
