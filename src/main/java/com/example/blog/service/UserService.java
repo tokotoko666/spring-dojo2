@@ -18,4 +18,9 @@ public class UserService {
         var encordePassword = passwordEncoder.encode(rawPassword);
         userRepository.insert(username, encordePassword, true);
     }
+
+    @Transactional
+    public void delete(String username) {
+        userRepository.deleteByUsername(username);
+    }
 }

@@ -1,8 +1,6 @@
 package com.example.blog.repository.user;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Optional;
 
@@ -17,11 +15,19 @@ public interface UserRepository {
             FROM users u
             WHERE u.username = #{username}
             """)
-    Optional<UserRecord> selectByUsername(String username);
+    Optional<UserRecord> selectByUsername(@Param("username") String username);
 
     @Insert("""
             INSERT INTO users(username, password, enabled)
             VALUES(#{username}, #{password}, #{enabled})
             """)
-    void insert(String username, String password, boolean enabled);
+    void insert(@Param("username") String username,
+                @Param("password") String password,
+                @Param("enabled") boolean enabled);
+
+    @Delete("""
+            DELETE FROM users u
+            WHERE u.username = #{username} 
+            """)
+    void deleteByUsername(@Param("username") String username);
 }
