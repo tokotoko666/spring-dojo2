@@ -3,6 +3,7 @@ package com.example.blog.it;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Optional;
@@ -15,6 +16,10 @@ public class RegistrationAndLoginIT {
     @Autowired
     private WebTestClient webTestClient;
 
+    private final String TEST_USERNAME = "user99";
+
+    private final String TEST_PASSWORD = "password1";
+
 
     @Test
     public void integrationTest() {
@@ -22,6 +27,7 @@ public class RegistrationAndLoginIT {
         var xsrfToken = getRoot();
 
         // ユーザー登録
+        register(xsrfToken);
 
         //ログイン失敗
         //Cookie に XSRF-TOKEN がない
@@ -52,5 +58,26 @@ public class RegistrationAndLoginIT {
                 .hasValueSatisfying(xsrfTokenCookie -> assertThat(xsrfTokenCookie.getValue()).isNotBlank());
 
         return xsrfTokenOpt.get().getValue();
+    }
+
+    private void register(String xsrfToken) {
+        // ## Arrange ##
+        var bodyJson = String.format("""
+                {
+                  "username": "%s",
+                  "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD);
+
+        // ## Act ##
+        var responseSpec = webTestClient.post().uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        // ## Assert ##
+        responseSpec.expectStatus().isCreated();
     }
 }
