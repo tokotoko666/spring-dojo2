@@ -60,13 +60,11 @@ public class RegistrationAndLoginIT {
         loginFailure_GivenUsernameDoesNotExistInDatabase(xsrfToken);
 
         //パスワードがデータベースに保存されているパスワードと違う
+        loginFailure_GivenPasswordIsNotSameAsPasswordInDatabase(xsrfToken);
+
         //ログイン成功
         loginSuccess(xsrfToken);
         //ユーザー名がデータベースに存在する
-        //パスワードがデータベースに保存されているパスワードと違う
-        //Cookie の XSRF-TOKEN とヘッダーの X-XSRF-TOKEN の値が一致する
-        //→ 200 OK が返る
-        //→ レスポンスに Set-Cookie: JSESSIONID が返ってくる
     }
 
     private String getRoot() {
@@ -210,6 +208,28 @@ public class RegistrationAndLoginIT {
                   "password": "%s"
                 }
                 """, TEST_USERNAME + "_invalid", TEST_PASSWORD);
+
+        // ## Act ##
+        var responseSpec = webTestClient.post().uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        // ## Assert ##
+        responseSpec.expectStatus().isUnauthorized();
+    }
+
+    private void loginFailure_GivenPasswordIsNotSameAsPasswordInDatabase(String xsrfToken) {
+        // ## Arrange ##
+        var bodyJson = String.format("""
+                {
+                  "username": "%s",
+                  "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD + "_invalid");
 
         // ## Act ##
         var responseSpec = webTestClient.post().uri("/login")
