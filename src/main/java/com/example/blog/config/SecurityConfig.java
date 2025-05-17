@@ -53,10 +53,11 @@ public class SecurityConfig {
                 )
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers("/articles/**").permitAll()
+                                .requestMatchers("/").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                .requestMatchers("/articles/**").permitAll()
 //                        .requestMatchers("/").permitAll()
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(customizer -> customizer.accessDeniedHandler((req, res, auth) -> {
                     res.setStatus(HttpServletResponse.SC_FORBIDDEN);
