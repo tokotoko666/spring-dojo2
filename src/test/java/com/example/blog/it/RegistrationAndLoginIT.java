@@ -1,8 +1,12 @@
 package com.example.blog.it;
 
+import com.example.blog.service.UserService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Optional;
@@ -15,10 +19,29 @@ public class RegistrationAndLoginIT {
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private UserService userService;
+
+    private final String TEST_USERNAME = "user1";
+
+    private final String TEST_PASSWORD = "password1";
+
+    @BeforeEach
+    public void beforeEach() {
+        userService.delete(TEST_USERNAME);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        userService.delete(TEST_USERNAME);
+    }
+
     @Test
     public void integrationTest() {
 
+        var xsrfToken = getRoot();
         // ユーザー登録
+        register(xsrfToken);
         //ログイン失敗
         //Cookie に XSRF-TOKEN がない
         //ヘッダーに X-XSRF-TOKEN がない
@@ -31,8 +54,6 @@ public class RegistrationAndLoginIT {
         //Cookie の XSRF-TOKEN とヘッダーの X-XSRF-TOKEN の値が一致する
         //→ 200 OK が返る
         //→ レスポンスに Set-Cookie: JSESSIONID が返ってくる
-
-        var xsrfToken = getRoot();
 
     }
 
@@ -54,5 +75,28 @@ public class RegistrationAndLoginIT {
                 .hasValueSatisfying(xsrfToken -> assertThat(xsrfToken.getValue()).isNotBlank());
 
         return xsrfTokenOpt.get().getValue();
+    }
+
+    private void register(String xsrfToken) {
+
+        // ## Arrange ##
+        var bodyJson = String.format(
+                """
+                {
+                  "username": "%s",
+                  "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD);
+
+        // ## Act ##
+        var responseSpec = webTestClient.post().uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        // ## Assert ##
+        responseSpec.expectStatus().isCreated();
     }
 }
