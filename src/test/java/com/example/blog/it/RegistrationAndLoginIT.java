@@ -22,9 +22,11 @@ public class RegistrationAndLoginIT {
     @Autowired
     private UserService userService;
 
-    private final String TEST_USERNAME = "user1";
+    private static final String TEST_USERNAME = "user1";
 
-    private final String TEST_PASSWORD = "password1";
+    private static final String TEST_PASSWORD = "password1";
+
+    private static final String DUMMY_SESSION_ID = "session_id_1";
 
     @BeforeEach
     public void beforeEach() {
@@ -48,7 +50,10 @@ public class RegistrationAndLoginIT {
         //Cookie の XSRF-TOKEN とヘッダーの X-XSRF-TOKEN の値が異なる
         //ユーザー名が存在しない
         //パスワードがデータベースに保存されているパスワードと違う
+
         //ログイン成功
+        loginSuccess(xsrfToken);
+
         //ユーザー名がデータベースに存在する
         //パスワードがデータベースに保存されているパスワードと違う
         //Cookie の XSRF-TOKEN とヘッダーの X-XSRF-TOKEN の値が一致する
@@ -82,11 +87,11 @@ public class RegistrationAndLoginIT {
         // ## Arrange ##
         var bodyJson = String.format(
                 """
-                {
-                  "username": "%s",
-                  "password": "%s"
-                }
-                """, TEST_USERNAME, TEST_PASSWORD);
+                        {
+                          "username": "%s",
+                          "password": "%s"
+                        }
+                        """, TEST_USERNAME, TEST_PASSWORD);
 
         // ## Act ##
         var responseSpec = webTestClient.post().uri("/users")
@@ -98,5 +103,32 @@ public class RegistrationAndLoginIT {
 
         // ## Assert ##
         responseSpec.expectStatus().isCreated();
+    }
+
+    private void loginSuccess(String xsrfToken) {
+
+        // ## Arrange ##
+        var bodyJson = String.format(
+                """
+                        {
+                          "username": "%s",
+                          "password": "%s"
+                        }
+                        """, TEST_USERNAME, TEST_PASSWORD);
+
+        // ## Act ##
+        var responseSpec = webTestClient.post().uri("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        // ## Assert ##
+        responseSpec.expectStatus().isOk()
+                .expectCookie().value("JSESSIONID", v -> assertThat(v)
+                        .isNotBlank()
+                        .isNotEqualTo(DUMMY_SESSION_ID));
     }
 }
