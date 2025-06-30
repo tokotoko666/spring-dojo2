@@ -28,6 +28,8 @@ public class RegistrationAndLoginIT {
 
     public static final String DUMMY_SESSION_ID = "session_id_1";
 
+    private static final String SESSION_COOKIE_NAME = "SESSION";
+
     @BeforeEach
     public void beforeEach() {
         userService.delete(TEST_USERNAME);
@@ -118,14 +120,14 @@ public class RegistrationAndLoginIT {
         var responseSpec = webTestClient.post().uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie("XSRF-TOKEN", xsrfToken)
-                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .cookie(SESSION_COOKIE_NAME, DUMMY_SESSION_ID)
                 .header("X-XSRF-TOKEN", xsrfToken)
                 .bodyValue(bodyJson)
                 .exchange();
 
         // ## Assert ##
         responseSpec.expectStatus().isOk()
-                .expectCookie().value("JSESSIONID", v -> assertThat(v)
+                .expectCookie().value(SESSION_COOKIE_NAME, v -> assertThat(v)
                         .isNotBlank()
                         .isNotEqualTo(DUMMY_SESSION_ID));
     }
@@ -145,7 +147,7 @@ public class RegistrationAndLoginIT {
                 /*
                 .cookie("XSRF-TOKEN", xsrfToken)
                  */
-                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .cookie(SESSION_COOKIE_NAME, DUMMY_SESSION_ID)
                 .header("X-XSRF-TOKEN", xsrfToken)
                 .bodyValue(bodyJson)
                 .exchange();
@@ -167,7 +169,7 @@ public class RegistrationAndLoginIT {
         var responseSpec = webTestClient.post().uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie("XSRF-TOKEN", xsrfToken)
-                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .cookie(SESSION_COOKIE_NAME, DUMMY_SESSION_ID)
                 /*
                 .header("X-XSRF-TOKEN", xsrfToken)
                  */
@@ -191,7 +193,7 @@ public class RegistrationAndLoginIT {
         var responseSpec = webTestClient.post().uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie("XSRF-TOKEN", xsrfToken)
-                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .cookie(SESSION_COOKIE_NAME, DUMMY_SESSION_ID)
                 .header("X-XSRF-TOKEN", xsrfToken + "_invalid")
                 .bodyValue(bodyJson)
                 .exchange();
@@ -213,7 +215,7 @@ public class RegistrationAndLoginIT {
         var responseSpec = webTestClient.post().uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie("XSRF-TOKEN", xsrfToken)
-                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .cookie(SESSION_COOKIE_NAME, DUMMY_SESSION_ID)
                 .header("X-XSRF-TOKEN", xsrfToken)
                 .bodyValue(bodyJson)
                 .exchange();
@@ -235,7 +237,7 @@ public class RegistrationAndLoginIT {
         var responseSpec = webTestClient.post().uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .cookie("XSRF-TOKEN", xsrfToken)
-                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .cookie(SESSION_COOKIE_NAME, DUMMY_SESSION_ID)
                 .header("X-XSRF-TOKEN", xsrfToken)
                 .bodyValue(bodyJson)
                 .exchange();
