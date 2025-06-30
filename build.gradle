@@ -35,6 +35,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation 'org.springframework.session:spring-session-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -51,4 +53,9 @@ flyway {
 	url = 'jdbc:mysql://localhost:3306/apidb'
 	user = 'apiuser'
 	password = 'apipass'
+	locations = [
+			'filesystem:src/main/resources/db/migration',
+			'filesystem:src/main/resources/db/migration_dev' // 開発用サンプルデータ
+	]
+
 }
