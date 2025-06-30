@@ -1,10 +1,11 @@
 package com.example.blog;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Base64;
 
-public class SpringSessionBase64Test {
+public class SomeTrialTest {
 
     @Test
     public void test() {
@@ -14,4 +15,13 @@ public class SpringSessionBase64Test {
         System.out.println(encoded64String);
         // YTcwMzY4ZjctMDIzNy00Njg0LTljOTYtYWU3YjgxYjA5MjBh
     }
+
+    @Test
+    public void bcrypt() {
+        var encoder = new BCryptPasswordEncoder();
+        System.out.println(encoder.encode("password"));
+        System.out.println(encoder.encode("password"));
+        System.out.println(encoder.encode("password"));
+    }
+
 }
