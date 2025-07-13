@@ -43,7 +43,7 @@ public class RegistrationAndLoginIT {
     @Test
     public void integrationTest() {
 
-        var xsrfToken = getRoot();
+        var xsrfToken = getCsrfCookie();
         // ユーザー登録
         register(xsrfToken);
 
@@ -74,12 +74,12 @@ public class RegistrationAndLoginIT {
 
     }
 
-    private String getRoot() {
+    private String getCsrfCookie() {
 
         // ## Arrange ##
 
         // ## Act ##
-        var responseSpec = webTestClient.get().uri("/").exchange();
+        var responseSpec = webTestClient.get().uri("/csrf-cookie").exchange();
 
         // ## Assert ##
         responseSpec.expectStatus().isNoContent();
