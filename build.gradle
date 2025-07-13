@@ -91,3 +91,17 @@ spotless {
 		removeUnusedImports()
 	}
 }
+
+tasks.named("spotlessJava") {
+	dependsOn tasks.named("openApiGenerate")
+}
+
+tasks.named("openApiGenerate").configure {
+	finalizedBy tasks.named("spotlessJavaApply")
+}
+
+tasks.named("compileJava") {
+	dependsOn tasks.named("openApiGenerate")
+}
+
+
