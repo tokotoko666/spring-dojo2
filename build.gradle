@@ -62,3 +62,7 @@ flyway {
 	]
 
 }
+
+openApiValidate {
+	inputSpec.set("$projectDir/src/main/resources/openapi.yaml")
+}
