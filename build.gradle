@@ -63,6 +63,21 @@ flyway {
 
 }
 
+def openApiSpecPath = "$projectDir/src/main/resources/openapi.yaml"
+def openApiGeneratedCodePath = layout.buildDirectory.dir("spring").get().toString()
+
 openApiValidate {
-	inputSpec.set("$projectDir/src/main/resources/openapi.yaml")
+	inputSpec.set(openApiSpecPath)
+}
+
+openApiGenerate {
+	generatorName.set("spring")
+	inputSpec.set(openApiSpecPath)
+	outputDir.set(openApiGeneratedCodePath)
+	apiPackage.set("com.example.blog.api")
+	invokerPackage.set("com.example.blog.invoker")
+	modelPackage.set("com.example.blog.model")
+	configOptions.put("interfaceOnly", "true")
+	configOptions.put("useSpringBoot3", "true")
+	configOptions.put("documentationProvider", "none")
 }
