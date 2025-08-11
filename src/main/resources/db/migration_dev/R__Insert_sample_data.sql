@@ -9,10 +9,11 @@ INSERT INTO articles (title, body)
  ;
 
 DELETE FROM users;
+ALTER TABLE users AUTO_INCREMENT = 1;
 
--- password is "password" for all users
-INSERT INTO users(username, password, enabled)
- VALUES('user1', '$2a$10$F5JP83Nje/nst4yLgRTRVeseBIYitiDS71TDNIK5CZ6wEm6byWYTa', true)
-     , ('user2', '$2a$10$JctG3h1.BTvVLvU26r0mzeYENPNYcMts/y5U.1I028hwmqZsO18si', true)
-     , ('user3', '$2a$10$R5roJSqLKSEPGXFsYqoAUuBq/8xe0KpVUzbMWWjN4Th54/K9I8lfC', true)
+-- password is "password00" for all users
+INSERT INTO users(id, username, password, enabled)
+ VALUES(1, 'user1', '$2a$10$DwLD6kILvgc39Fn/kLQwJusCvM6c8ahzWQ/A/vlFevT1J/DgFHt.m', true)
+     , (2, 'user2', '$2a$10$X6u0gPNLz4NFSW88HMa2yuaT/EELyAmKMJwYXfSmXmvG.gsmkNOmq', true)
+     , (3, 'user3', '$2a$10$s10PI3QktrlCAv/axoEJbuYkE1bLlAEZr53MkEU0nxPdiBL7JywzK', true)
 ;
