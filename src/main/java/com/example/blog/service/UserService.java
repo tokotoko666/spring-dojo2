@@ -1,6 +1,7 @@
 package com.example.blog.service;
 
 import com.example.blog.repository.user.UserRepository;
+import com.example.blog.service.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,8 @@ public class UserService {
     @Transactional
     public void register(String username, String rawPassword) {
         String encodedPassword = passwordEncoder.encode(rawPassword);
-        userRepository.insert(username, encodedPassword, true);
+        var newUser = new UserEntity(null, username, encodedPassword, true);
+        userRepository.insert(newUser);
     }
 
     @Transactional
