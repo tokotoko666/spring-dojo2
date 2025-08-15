@@ -5,8 +5,8 @@ import com.example.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.security.Principal;
 
 @RestController
@@ -24,6 +24,13 @@ public class UserRestController {
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody UserForm userForm) {
         var newUser = userService.register(userForm.username(), userForm.password());
-        return ResponseEntity.created(URI.create("/users/" + newUser.getId())).build();
+
+        var location = UriComponentsBuilder.fromPath("/users/{id}")
+                .build().expand(newUser.getId())
+                .toUri();
+
+        return ResponseEntity
+                .created(location)
+                .build();
     }
 }
