@@ -32,8 +32,12 @@ public class UserRestController implements UsersApi {
                 .build().expand(newUser.getId())
                 .toUri();
 
+        var dto = new UserDTO();
+        dto.setId(newUser.getId());
+        dto.setUsername(newUser.getUsername());
+
         return ResponseEntity
                 .created(location)
-                .build();
+                .body(dto);
     }
 }
