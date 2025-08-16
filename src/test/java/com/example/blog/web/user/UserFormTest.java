@@ -23,4 +23,19 @@ class UserFormTest {
         // ## Assert ##
         assertThat(actual).isEmpty();
     }
+
+    @Test
+    @DisplayName("username のバリデーション：失敗")
+    void username_failure() {
+        // ## Arrange ##
+        var validatorFactory = Validation.buildDefaultValidatorFactory();
+        var validator = validatorFactory.getValidator();
+        var cut = new UserForm(null, "password00");
+
+        // ## Act ##
+        var actual = validator.validate(cut);
+
+        // ## Assert ##
+        assertThat(actual).isNotEmpty();
+    }
 }
