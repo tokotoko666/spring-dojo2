@@ -7,6 +7,7 @@ import com.example.blog.model.UserDTO;
 import com.example.blog.model.UserForm;
 import com.example.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -56,7 +57,7 @@ public class UserRestController implements UsersApi {
     public ResponseEntity<BadRequest> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
         var body = new BadRequest();
-        body.setTitle(e.getBody().getTitle());
+        BeanUtils.copyProperties(e.getBody(), body);
         return ResponseEntity
                 .badRequest()
                 .body(body);
