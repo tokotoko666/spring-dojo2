@@ -3,6 +3,7 @@ package com.example.blog.service;
 import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.config.PasswordEncoderConfig;
 import com.example.blog.repository.user.UserRepository;
+import com.example.blog.service.user.UserEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,4 +54,20 @@ class UserServiceTest {
                     .isTrue();
         });
     }
+
+    @Test
+    @DisplayName("existsUsername: ユーザー名がすでに登録済のとき true")
+    void existsUsername_returnTrue() {
+        // ## Arrange ##
+        var username = "test_username";
+        var alreadyExistUser = new UserEntity(null, username, "test_password", true);
+        userRepository.insert(alreadyExistUser);
+
+        // ## Act ##
+        var actual = cut.existsUsername(username);
+
+        // ## Assert ##
+        assertThat(actual).isTrue();
+    }
+
 }
