@@ -26,4 +26,9 @@ public class UserService {
     public void delete(String username) {
         userRepository.deleteByUsername(username);
     }
+
+    @Transactional(readOnly = true)
+    public boolean existsUsername(String username) {
+        return userRepository.selectByUsername(username).isPresent();
+    }
 }
