@@ -3,6 +3,7 @@ package com.example.blog.web.user;
 
 import com.example.blog.api.UsersApi;
 import com.example.blog.model.BadRequest;
+import com.example.blog.model.ErrorDetail;
 import com.example.blog.model.UserDTO;
 import com.example.blog.model.UserForm;
 import com.example.blog.service.UserService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.security.Principal;
+import java.util.ArrayList;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,6 +61,19 @@ public class UserRestController implements UsersApi {
 
         var body = new BadRequest();
         BeanUtils.copyProperties(e.getBody(), body);
+
+        var errorDetailList = new ArrayList<ErrorDetail>();
+        for (final FieldError fieldError: e.getBindingResult().getFieldErrors()) {
+            var pointer = "#/" + fieldError.getField();
+            var detatil = fieldError.getCode();
+
+            var errorDetail = new ErrorDetail();
+            errorDetail.setPointer(pointer);
+            errorDetail.setDetail(detatil);
+
+            errorDetailList.add(errorDetail);
+        }
+        body.setErrors(errorDetailList);
         return ResponseEntity
                 .badRequest()
                 .body(body);
