@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -140,7 +140,14 @@ class UserRestControllerTest {
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.detail").value("Invalid request content."))
                 .andExpect(jsonPath("$.type").value("about:blank"))
-                .andExpect(jsonPath("$.instance").isEmpty());
+                .andExpect(jsonPath("$.instance").isEmpty())
+                .andExpect(jsonPath("$.errors", hasItem(
+                        allOf(
+                                hasEntry("pointer", "#/username"),
+                                hasEntry("detail", "このユーザー名はすでに使用されています")
+                        )
+                )))
+        ;
     }
 
 }
