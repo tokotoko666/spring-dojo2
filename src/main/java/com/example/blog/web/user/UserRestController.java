@@ -9,6 +9,8 @@ import com.example.blog.model.UserForm;
 import com.example.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
@@ -28,6 +30,7 @@ public class UserRestController implements UsersApi {
 
     private final UserService userService;
     private final DuplicateUsernameValidator duplicateUsernameValidator;
+    private final MessageSource messageSource;
 
     @InitBinder
     public void initBinder(DataBinder dataBinder) {
@@ -62,14 +65,15 @@ public class UserRestController implements UsersApi {
         var body = new BadRequest();
         BeanUtils.copyProperties(e.getBody(), body);
 
+        var locale = LocaleContextHolder.getLocale();
         var errorDetailList = new ArrayList<ErrorDetail>();
         for (final FieldError fieldError: e.getBindingResult().getFieldErrors()) {
             var pointer = "#/" + fieldError.getField();
-            var detatil = fieldError.getCode();
+            var detail = messageSource.getMessage(fieldError, locale);
 
             var errorDetail = new ErrorDetail();
             errorDetail.setPointer(pointer);
-            errorDetail.setDetail(detatil);
+            errorDetail.setDetail(detail);
 
             errorDetailList.add(errorDetail);
         }
