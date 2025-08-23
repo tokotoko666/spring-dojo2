@@ -24,7 +24,7 @@ public class RegistrationAndLoginIT {
 
     private static final String TEST_USERNAME = "user1";
 
-    private static final String TEST_PASSWORD = "password1";
+    private static final String TEST_PASSWORD = "password10";
 
     private static final String DUMMY_SESSION_ID = "session_id_1";
 
