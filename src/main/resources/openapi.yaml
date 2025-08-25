@@ -60,6 +60,8 @@ paths:
         '400':
           description: Bad Request
           $ref: "#/components/responses/BadRequestResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
 components:
   schemas:
     InternalServerError:
