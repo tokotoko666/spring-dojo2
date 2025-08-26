@@ -19,9 +19,9 @@ public class CustomUserDetailService  implements UserDetailsService {
 
         return userRepository.selectByUsername(username)
                 .map(r -> User.builder()
-                        .username(r.username())
-                        .password(r.password())
-                        .disabled(!r.enabled())
+                        .username(r.getUsername())
+                        .password(r.getPassword())
+                        .disabled(!r.isEnabled())
                         .build()
                 )
                 .orElseThrow(() -> new UsernameNotFoundException(
