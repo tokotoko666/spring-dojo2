@@ -15,7 +15,6 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -83,6 +82,8 @@ class UserRestControllerTest {
         actual
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", matchesPattern("/users/\\d+")))
-                .andDo(print());
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.username").value("username123"))
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 }
