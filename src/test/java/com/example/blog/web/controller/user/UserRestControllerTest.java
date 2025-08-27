@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -61,7 +62,7 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("POST /users: ユーザー作成に成功すると、レスポンスボディにユーザー情報/LocationヘッダーにURIがセットされる")
-    void create_success() throws Exception {
+    void createUser_success() throws Exception {
         // ## Arrange ##
         var newUserJson = """
                 {
@@ -85,5 +86,30 @@ class UserRestControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.username").value("username123"))
                 .andExpect(jsonPath("$.password").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("POST /users: リクエストボディに username のキーがないとき、400 Bad Request")
+    void createUser_badReuest() throws Exception {
+        // ## Arrange ##
+        var newUserJson = """
+                {
+                  "password": "password123"
+                }
+                """;
+
+        // ## Act ##
+        var actual = mockMvc.perform(
+                post("/users")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newUserJson)
+        );
+
+        // ## Assert ##
+        actual
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
     }
 }
