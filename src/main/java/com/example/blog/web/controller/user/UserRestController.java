@@ -36,7 +36,7 @@ public class UserRestController implements UsersApi {
         dataBinder.addValidators(duplicateUsernameValidator);
     }
 
-    @GetMapping("/me")
+    @GetMapping("/users/me")
     public ResponseEntity<String> me(Principal principal) {
         return ResponseEntity.ok(principal.getName());
     }

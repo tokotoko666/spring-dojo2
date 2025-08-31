@@ -33,7 +33,7 @@ public interface UserRepository {
 
     @Delete("""
             DELETE FROM users u
-            WHERE u.username = #{username} 
+            WHERE u.username = #{username}
             """)
     void deleteByUsername(@Param("username") String username);
 }
