@@ -52,6 +52,12 @@ class UserFormTest {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "username!",
             "Username",
+            ".username",
+            "-username",
+            "_username",
+            "username.",
+            "username-",
+            "username_",
     })
     void username_failure(String username) {
         // ## Arrange ##
