@@ -150,7 +150,7 @@ class UserRestControllerTest {
                 .andExpect(jsonPath("$.instance").isEmpty())
                 .andExpect(jsonPath("$.errors", hasItem(
                         allOf(
-                                hasEntry("pointer", "#username"),
+                                hasEntry("pointer", "#/username"),
                                 hasEntry("detail", "このユーザー名はすでに使用されています")
                         )
                 )))
