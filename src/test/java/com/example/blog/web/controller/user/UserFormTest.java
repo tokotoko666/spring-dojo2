@@ -50,6 +50,8 @@ class UserFormTest {
             "",
             "a",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "username!",
+            "Username",
     })
     void username_failure(String username) {
         // ## Arrange ##
