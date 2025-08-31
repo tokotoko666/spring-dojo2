@@ -77,4 +77,25 @@ class UserFormTest {
         assertThat(actual)
                 .anyMatch(violation -> violation.getPropertyPath().toString().equals("username"));
     }
+
+    @ParameterizedTest
+    @DisplayName("password のバリデーション：成功")
+    @ValueSource(strings = {
+            // 10 characters
+            "1234567890",
+            // 255 characters
+            "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345",
+            // alphabet + symbols
+            "!$%&'()QWERTYUIOP`ASDFGHJKL+ZXCVBNM<>?_"
+    })
+    void password_success(String password) {
+        // ## Arrange ##
+        var userForm = new UserForm("username00", password);
+
+        // ## Act ##
+        var actual = validator.validate(userForm);
+
+        // ## Assert ##
+        assertThat(actual).isEmpty();
+    }
 }
