@@ -1,5 +1,6 @@
 package com.example.blog.web.controller.user;
 
+import com.example.blog.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ class UserRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     public void mockMvc() {
@@ -90,13 +94,42 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("POST /users: リクエストボディに username のキーがないとき、400 Bad Request")
-    void createUser_badReuest() throws Exception {
+    void createUser_badRequest() throws Exception {
         // ## Arrange ##
         var newUserJson = """
                 {
                   "password": "password123"
                 }
                 """;
+
+        // ## Act ##
+        var actual = mockMvc.perform(
+                post("/users")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newUserJson)
+        );
+
+        // ## Assert ##
+        actual
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    @DisplayName("POST /users: すでに登録されているユーザー名を指定したとき、400 Bad Request")
+    void createUser_badRequest_duplicateUsername() throws Exception {
+        // ## Arrange ##
+        var duplicateUsername = "username00";
+        userService.register(duplicateUsername, "test_password");
+
+        var newUserJson = """
+                {
+                  "username": "%s",
+                  "password": "password123"
+                }
+                """.formatted(duplicateUsername);
 
         // ## Act ##
         var actual = mockMvc.perform(
