@@ -27,7 +27,8 @@ public class ArticleRestController implements ArticlesApi {
 
     @Override
     public ResponseEntity<Void> creteArticle() {
-        return ResponseEntity.created(URI.create("about:blank"))
+        return ResponseEntity
+                .created(URI.create("/articles/123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
