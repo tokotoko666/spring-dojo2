@@ -125,6 +125,11 @@ paths:
      operationId: creteArticle
      security:
        - cookieAuth: []
+     requestBody:
+       content:
+         application/json:
+           schema:
+             $ref: "#/components/schemas/ArticleForm"
      responses:
        '201':
          description: Created
@@ -265,6 +270,18 @@ components:
           minLength: 10
           maxLength: 255
           example: password123
+    ArticleForm:
+      type: object
+      required:
+        - title
+        - body
+      properties:
+        title:
+          description: ブログ記事のタイトル
+          type: string
+        body:
+          description: ブログ記事の本文
+          type: string
     UserDTO:
       type: object
       properties:
