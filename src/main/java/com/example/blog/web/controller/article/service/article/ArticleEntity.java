@@ -1,12 +1,16 @@
 package com.example.blog.web.controller.article.service.article;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
-public record ArticleEntity (
-        Long id,
-        String title,
-        String content,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
-){
+@Data
+@AllArgsConstructor
+public class ArticleEntity {
+        private Long id;
+        private String title;
+        private String content;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 }
