@@ -30,7 +30,7 @@ class ArticleServiceMockTest {
 
     @Test
     public void mockPractice() {
-        when(articleRepository.selectById(999)).thenReturn(Optional.of(new ArticleEntity(999L, null, null, null, null)));
+        when(articleRepository.selectById(999)).thenReturn(Optional.of(new ArticleEntity(999L, null, null, null, null, null)));
 
         assertThat(articleRepository.selectById(999)).isPresent().hasValueSatisfying(article -> {
             assertThat(article.getId()).isEqualTo(999);
@@ -47,6 +47,7 @@ class ArticleServiceMockTest {
                         999L,
                         "title_999",
                         "body_999",
+                        null,
                         LocalDateTime.of(2022,1,1,10,0,0,0),
                         LocalDateTime.of(2022,2,1,11,0,0,0))
         ));
