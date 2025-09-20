@@ -1,4 +1,4 @@
-package com.example.blog.web.user;
+package com.example.blog.web.controller.user;
 
 import com.example.blog.service.user.UserService;
 import org.junit.jupiter.api.DisplayName;
