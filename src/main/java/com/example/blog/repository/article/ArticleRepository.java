@@ -32,5 +32,6 @@ public interface ArticleRepository {
             VALUES(#{author.id}, #{title}, #{body}, #{createdAt}, #{updatedAt})
             """
     )
+    @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     void insert(ArticleEntity entity);
 }
