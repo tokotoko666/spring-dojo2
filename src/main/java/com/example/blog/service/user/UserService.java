@@ -1,7 +1,6 @@
-package com.example.blog.service;
+package com.example.blog.service.user;
 
 import com.example.blog.repository.user.UserRepository;
-import com.example.blog.service.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

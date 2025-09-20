@@ -4,7 +4,7 @@ import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.repository.user.UserRepository;
 import com.example.blog.service.user.UserEntity;
 import com.example.blog.util.TestDateTimeUtil;
-import com.example.blog.web.controller.article.service.article.ArticleEntity;
+import com.example.blog.service.article.ArticleEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

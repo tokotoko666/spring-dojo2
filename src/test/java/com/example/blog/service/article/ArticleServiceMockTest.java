@@ -1,4 +1,4 @@
-package com.example.blog.web.controller.article.service.article;
+package com.example.blog.service.article;
 
 import com.example.blog.repository.article.ArticleRepository;
 import com.example.blog.util.TestDateTimeUtil;

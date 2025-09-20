@@ -1,6 +1,6 @@
 package com.example.blog.web.controller;
 
-import com.example.blog.service.UserService;
+import com.example.blog.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
