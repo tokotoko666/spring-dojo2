@@ -2,14 +2,17 @@ package com.example.blog.service.article;
 
 import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.repository.user.UserRepository;
-import com.example.blog.service.article.ArticleService;
+import com.example.blog.service.DateTimeService;
 import com.example.blog.service.user.UserEntity;
+import com.example.blog.util.TestDateTimeUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @MybatisDefaultDatasourceTest
 @Import(ArticleService.class)
@@ -20,6 +23,9 @@ class ArticleServiceTest {
 
     @Autowired
     private ArticleService cut;
+
+    @MockBean
+    private DateTimeService mockDateTimeService;
 
     @Test
     void setup() {
@@ -37,6 +43,9 @@ class ArticleServiceTest {
         expectedUser.setEnabled(true);
         userRepository.insert(expectedUser);
 
+        var expectedCurrentDateTime = TestDateTimeUtil.of(2020, 1, 2, 10, 20, 30);
+        when(mockDateTimeService.now()).thenReturn(expectedCurrentDateTime);
+
         var expectedTitle = "test_article_title";
         var expectedBody = "test_article_body";
 
@@ -53,8 +62,8 @@ class ArticleServiceTest {
         assertThat(actual.getAuthor().getUsername()).isEqualTo(expectedUser.getUsername());
         assertThat(actual.getAuthor().getPassword()).isNull();
         assertThat(actual.getAuthor().isEnabled()).isEqualTo(expectedUser.isEnabled());
-        assertThat(actual.getCreatedAt()).isNotNull();
-        assertThat(actual.getUpdatedAt()).isEqualTo(actual.getCreatedAt());
+        assertThat(actual.getCreatedAt()).isEqualTo(expectedCurrentDateTime);
+        assertThat(actual.getUpdatedAt()).isEqualTo(expectedCurrentDateTime);
     }
 
 }
