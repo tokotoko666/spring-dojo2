@@ -51,15 +51,15 @@ class UserRestControllerTest {
     }
 
     @Test
-    @DisplayName("/users/me: 未ログインユーザーがアクセスすると、403 Forbiden を返す")
-    public void usersMe_return403() throws Exception {
+    @DisplayName("/users/me: 未ログインユーザーがアクセスすると、401 Unauthorized を返す")
+    public void usersMe_return401() throws Exception {
         // ## Arrange ##
 
         // ## Assert ##
         var actual = mockMvc.perform(MockMvcRequestBuilders.get("/users/me"));
 
         // ## Assert ##
-        actual.andExpect(status().isForbidden());
+        actual.andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -108,7 +108,8 @@ class UserRestControllerTest {
         // ## Assert ##
         actual
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
@@ -136,6 +137,7 @@ class UserRestControllerTest {
         actual
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.title").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.detail").value("Invalid request content."))
@@ -173,6 +175,7 @@ class UserRestControllerTest {
         actual
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.title").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.detail").value("Invalid request content."))
@@ -210,6 +213,7 @@ class UserRestControllerTest {
         actual
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.title").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.detail").value("Invalid request content."))
