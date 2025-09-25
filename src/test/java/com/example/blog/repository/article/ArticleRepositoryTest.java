@@ -75,6 +75,22 @@ class ArticleRepositoryTest {
     }
 
     @Test
+    @DisplayName("selectAll: 記事が存在しないとき、空のリストを返す")
+    @Sql(statements = """
+            DELETE FROM articles;
+            """)
+    void select_returnEmptyList() {
+        // ## Arrange ##
+
+        // ## Act ##
+        var actual = cut.selectAll();
+
+        // ## Assert ##
+        assertThat(actual).isEmpty();
+    }
+
+
+    @Test
     @DisplayName("insert:記事データの作成に成功する")
     void insert_success() {
         // ## Arrange ##
