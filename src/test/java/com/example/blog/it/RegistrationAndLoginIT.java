@@ -22,7 +22,7 @@ public class RegistrationAndLoginIT {
     @Autowired
     private UserService userService;
 
-    private static final String TEST_USERNAME = "user1";
+    private static final String TEST_USERNAME = "test_username1";
 
     private static final String TEST_PASSWORD = "password10";
 
