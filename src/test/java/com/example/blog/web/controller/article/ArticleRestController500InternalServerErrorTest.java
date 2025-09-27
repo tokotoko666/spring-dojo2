@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -43,7 +44,7 @@ class ArticleRestController500InternalServerErrorTest {
 
     @Test
     @DisplayName("POST /articles:500 InternalServerError で stackTrace が露出しない")
-    void createUsers_500() throws Exception {
+    void createArticle_500() throws Exception {
         // ## Arrange ##
         var userId = 99L;
         var title = "test_title";
@@ -64,6 +65,28 @@ class ArticleRestController500InternalServerErrorTest {
                         .with(user(new LoggedInUser(userId, "test_username", "", true)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(BodyJson)
+        );
+
+        // ## Assert ##
+        actual.andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Internal Server Error"))
+                .andExpect(jsonPath("$.status").value("500"))
+                .andExpect(jsonPath("$.detail").isEmpty())
+                .andExpect(jsonPath("$.type").value("about:blank"))
+                .andExpect(jsonPath("$.instance").isEmpty())
+                .andExpect(jsonPath("$", aMapWithSize(5)));
+    }
+
+    @Test
+    @DisplayName("GET /articles:500 InternalServerError で stackTrace が露出しない")
+    void listArticle_500() throws Exception {
+        // ## Arrange ##
+        when(articleService.findAll()).thenThrow(RuntimeException.class);
+
+        // ## Act ##
+        var actual = mockMvc.perform(get("/articles")
+                .contentType(MediaType.APPLICATION_JSON)
         );
 
         // ## Assert ##
