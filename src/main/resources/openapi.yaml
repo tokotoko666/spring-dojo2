@@ -130,6 +130,8 @@ paths:
       responses:
         '201':
           description: Created
+        '401':
+          $ref: "#/components/responses/UnauthorizedResponse"
 components:
   schemas:
     InternalServerError:
@@ -192,6 +194,26 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ErrorDetail"
+    Unauthorized:
+      description: ログインが必要です。
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+          default: 401
+          example: 401
+        detail:
+          type: string
+          default: "リクエストを実行するにはログインが必要です"
+        instance:
+          type: string
+          format: uri
+          example: /articles
     UserForm:
       type: object
       required:
@@ -236,9 +258,15 @@ components:
     BadRequestResponse:
       description: Bad Request
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/BadRequest"
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Unauthorized"
   securitySchemes:
     csrfProtectionHeader:
       description: >
