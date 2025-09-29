@@ -96,6 +96,4 @@ class ArticleRestControllerTest {
                 .andExpect(jsonPath("$.detail").value("CSRFトークンが不正です"))
                 .andExpect(jsonPath("$.instance").value("/articles"));
     }
-
-
 }
