@@ -1,5 +1,6 @@
 package com.example.blog.web.controller.article.service.article;
 
+import com.example.blog.service.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class ArticleEntity {
         private Long id;
         private String title;
         private String content;
+        private UserEntity author;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 }
