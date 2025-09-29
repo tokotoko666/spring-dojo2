@@ -1,5 +1,6 @@
 package com.example.blog.web.controller.article;
 
+import com.example.blog.security.LoggedInUser;
 import com.example.blog.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class ArticleRestControllerTest {
     @DisplayName("POST /articles: 新規記事の作成に成功する")
     void createArticles_201Created() throws Exception {
         // ## Arrange ##
-        var expectedUser = "test_user";
+        var expectedUser = new LoggedInUser(1L, "test_user", "", true);
         var expectedTitle = "test_title";
         var expectedBody = "test_body";
         var body = """
@@ -58,7 +59,6 @@ class ArticleRestControllerTest {
                 post("/articles")
                         .with(csrf())
                         .with(user(expectedUser))
-
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body)
         );
@@ -72,8 +72,8 @@ class ArticleRestControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.title").value(expectedTitle))
                 .andExpect(jsonPath("$.body").value(expectedBody))
-                .andExpect(jsonPath("$.author.id").isNumber())
-                .andExpect(jsonPath("$.author.username").value(expectedUser))
+                .andExpect(jsonPath("$.author.id").value(expectedUser.getUserId()))
+                .andExpect(jsonPath("$.author.username").value(expectedUser.getUsername()))
                 .andExpect(jsonPath("$.createdAt").isNotEmpty())
                 .andExpect(jsonPath("$.updatedAt").isNotEmpty())
                 ;
