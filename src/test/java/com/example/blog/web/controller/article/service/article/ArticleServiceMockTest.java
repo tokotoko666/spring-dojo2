@@ -31,7 +31,7 @@ class ArticleServiceMockTest {
     @Test
     public void mockPractice() {
         when(articleRepository.selectById(999)).thenReturn(Optional.of(
-                new ArticleEntity(999, null, null, null, null )
+                new ArticleEntity(999L, null, null, null, null )
         ));
 
         assertThat(articleRepository.selectById(999))
@@ -48,7 +48,7 @@ class ArticleServiceMockTest {
     public void selectById_returnArticleEntity() {
         // ## Arrange ##
         when(articleRepository.selectById(999)).thenReturn(Optional.of(
-                new ArticleEntity(999,
+                new ArticleEntity(999L,
                         "title_999",
                         "body_999",
                         LocalDateTime.of(2022,1,1,10,0,0),
