@@ -3,6 +3,7 @@ package com.example.blog.web.controller.article;
 import com.example.blog.config.ObjectMapperConfig;
 import com.example.blog.config.PasswordEncoderConfig;
 import com.example.blog.config.SecurityConfig;
+import com.example.blog.util.TestDateTimeUtil;
 import com.example.blog.web.controller.article.service.article.ArticleEntity;
 import com.example.blog.web.controller.article.service.article.ArticleService;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,8 +51,8 @@ class ArticleRestControllerMockTest {
                 "title_999",
                 "content_999",
                 null,
-                LocalDateTime.of(2022, 1, 2, 3, 4, 5),
-                LocalDateTime.of(2023, 1, 2, 3, 4, 5)
+                TestDateTimeUtil.of(2022, 1, 2, 3, 4),
+                TestDateTimeUtil.of(2023, 1, 2, 3, 4)
                 );
 
         when(mockArticleService.findById(expected.getId())).thenReturn(Optional.of(expected));
