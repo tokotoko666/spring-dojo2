@@ -72,8 +72,8 @@ class ArticleRestControllerTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.title").value(expectedTitle))
                 .andExpect(jsonPath("$.body").value(expectedBody))
-                .andExpect(jsonPath("$.auther.id").isNumber())
-                .andExpect(jsonPath("$.auther.name").value(expectedUser))
+                .andExpect(jsonPath("$.author.id").isNumber())
+                .andExpect(jsonPath("$.author.username").value(expectedUser))
                 .andExpect(jsonPath("$.createdAt").isNotEmpty())
                 .andExpect(jsonPath("$.updatedAt").isNotEmpty())
                 ;
