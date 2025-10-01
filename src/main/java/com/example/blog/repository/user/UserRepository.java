@@ -1,6 +1,6 @@
 package com.example.blog.repository.user;
 
-import com.example.blog.service.UserEntity;
+import com.example.blog.service.user.UserEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Optional;

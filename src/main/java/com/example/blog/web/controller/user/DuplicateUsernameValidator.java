@@ -1,7 +1,7 @@
 package com.example.blog.web.controller.user;
 
 import com.example.blog.model.UserForm;
-import com.example.blog.service.UserService;
+import com.example.blog.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

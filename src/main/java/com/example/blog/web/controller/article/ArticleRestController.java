@@ -5,7 +5,7 @@ import com.example.blog.model.ArticleDTO;
 import com.example.blog.model.ArticleForm;
 import com.example.blog.model.UserDTO;
 import com.example.blog.security.LoggedInUser;
-import com.example.blog.web.controller.article.service.article.ArticleService;
+import com.example.blog.service.article.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

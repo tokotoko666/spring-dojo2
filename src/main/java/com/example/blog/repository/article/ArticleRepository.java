@@ -1,6 +1,6 @@
 package com.example.blog.repository.article;
 
-import com.example.blog.web.controller.article.service.article.ArticleEntity;
+import com.example.blog.service.article.ArticleEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Optional;

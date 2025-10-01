@@ -1,6 +1,8 @@
-package com.example.blog.web.controller.article.service.article;
+package com.example.blog.service.article;
 
 import com.example.blog.repository.article.ArticleRepository;
+import com.example.blog.service.article.ArticleEntity;
+import com.example.blog.service.article.ArticleService;
 import com.example.blog.util.TestDateTimeUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

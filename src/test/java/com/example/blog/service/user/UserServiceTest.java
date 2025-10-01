@@ -1,8 +1,9 @@
-package com.example.blog.service;
+package com.example.blog.service.user;
 
 import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.config.PasswordEncoderConfig;
 import com.example.blog.repository.user.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,13 @@ class UserServiceTest {
 
         // ## Assert ##
         var actual = userRepository.selectByUsername(username);
-        assertThat(actual).hasValueSatisfying(actualEntity -> {
-            assertThat(actualEntity.getPassword())
+        Assertions.assertThat(actual).hasValueSatisfying(actualEntity -> {
+            Assertions.assertThat(actualEntity.getPassword())
                     .describedAs("入力された生のパスワードがハッシュ化されていること")
                     .isNotEmpty()
                     .isNotEqualTo(password);
 
-            assertThat(actualEntity.isEnabled())
+            Assertions.assertThat(actualEntity.isEnabled())
                     .describedAs("ユーザー登録時には、有効なアカウントとして登録する")
                     .isTrue();
         });

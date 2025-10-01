@@ -1,4 +1,4 @@
-package com.example.blog.service;
+package com.example.blog.service.user;
 
 import com.example.blog.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.example.blog.repository.user;
 
 import com.example.blog.config.MybatisDefaultDatasourceTest;
-import com.example.blog.service.UserEntity;
+import com.example.blog.service.user.UserEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

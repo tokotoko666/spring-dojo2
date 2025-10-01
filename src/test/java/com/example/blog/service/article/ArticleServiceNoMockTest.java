@@ -1,5 +1,6 @@
-package com.example.blog.web.controller.article.service.article;
+package com.example.blog.service.article;
 
+import com.example.blog.service.article.ArticleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
