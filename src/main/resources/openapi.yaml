@@ -295,7 +295,7 @@ components:
         title:
           description: ブログ記事のタイトル
           type: string
-          pattern: '^.[1,255]$'
+          pattern: '^.{1,255}$'
         body:
           description: ブログ記事の本文
           type: string
