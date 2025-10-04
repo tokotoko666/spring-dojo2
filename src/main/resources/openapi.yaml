@@ -342,7 +342,7 @@ components:
         title:
           type: string
         author:
-          $ref: "#/components/schemas/ArticleDTO"
+          $ref: "#/components/schemas/UserDTO"
         createdAt:
           type: string
           format: date-time
