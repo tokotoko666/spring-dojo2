@@ -2,9 +2,9 @@ package com.example.blog.repository.article;
 
 import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.repository.user.UserRepository;
+import com.example.blog.service.article.ArticleEntity;
 import com.example.blog.service.user.UserEntity;
 import com.example.blog.util.TestDateTimeUtil;
-import com.example.blog.service.article.ArticleEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,5 +118,42 @@ class ArticleRepositoryTest {
 
         // ## Assert ##
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    @DisplayName("selectAll: 記事が存在するとき、ArticleEntity のリストを返す")
+    @Sql(statements = """
+            DELETE FROM articles;
+            """)
+    void selectAll_returnNotEmptyList() {
+        // ## Arrange ##
+        var datetime1 = TestDateTimeUtil.of(2020, 1, 10, 10, 10);
+        var datetime2 = TestDateTimeUtil.of(2021, 1, 10, 10, 10);
+
+        var user1 = new UserEntity();
+        user1.setUsername("test_username1");
+        user1.setPassword("test_password1");
+        user1.setEnabled(true);
+        userRepository.insert(user1);
+
+        var expectedArticle1 = new ArticleEntity(null, "test_title1", "test_body1", user1, datetime1, datetime1);
+        var expectedArticle2 = new ArticleEntity(null, "test_title2", "test_body2", user1, datetime2, datetime2);
+
+        cut.insert(expectedArticle1);
+        cut.insert(expectedArticle2);
+
+        // ## Act ##
+        var actual = cut.selectAll();
+
+        // ## Assert ##
+        assertThat(actual).hasSize(2);
+        assertThat(actual.get(0))
+                .usingRecursiveComparison()
+                .ignoringFields("author.password")
+                .isEqualTo(expectedArticle2);
+        assertThat(actual.get(1))
+                .usingRecursiveComparison()
+                .ignoringFields("author.password")
+                .isEqualTo(expectedArticle1);
     }
 }
