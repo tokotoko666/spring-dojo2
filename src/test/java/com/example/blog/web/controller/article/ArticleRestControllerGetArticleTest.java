@@ -89,7 +89,7 @@ class ArticleRestControllerGetArticleTest {
                 .andExpect(jsonPath("$.title").value("Not Found"))
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.detail").value("リソースが見つかりません"))
-                .andExpect(jsonPath("$.instance").value("/articles" + invalidArticleId));
+                .andExpect(jsonPath("$.instance").value("/articles/" + invalidArticleId));
         ;
     }
 
