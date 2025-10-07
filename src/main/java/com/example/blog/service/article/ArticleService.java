@@ -44,15 +44,17 @@ public class ArticleService {
     }
 
     @Transactional
-    public ArticleEntity update(long userId, long articleId, String updatedTitle, String updatedBody) {
-        // TODO
-        var entity = findById(articleId).orElseThrow();
-        entity.setTitle(updatedTitle);
-        entity.setBody(updatedBody);
-        entity.setUpdatedAt(dateTimeService.now());
+    public Optional<ArticleEntity> update(long userId, long articleId, String updatedTitle, String updatedBody) {
 
-        articleRepository.update(entity);
+        return findById(articleId)
+                .map(entity -> {
+                    entity.setTitle(updatedTitle);
+                    entity.setBody(updatedBody);
+                    entity.setUpdatedAt(dateTimeService.now());
 
-        return entity;
+                    articleRepository.update(entity);
+
+                    return entity;
+                });
     }
 }
