@@ -58,4 +58,15 @@ public interface ArticleRepository {
     default List<ArticleEntity> selectAll() {
         return __select(null);
     }
+
+    @Update("""
+            UPDATE articles
+            SET
+                title      = #{title}
+              , body       = #{body}
+              , updated_at = #{updatedAt}
+            WHERE id = #{id}
+              AND user_id = #{author.id} 
+            """)
+    void update(ArticleEntity entity);
 }
