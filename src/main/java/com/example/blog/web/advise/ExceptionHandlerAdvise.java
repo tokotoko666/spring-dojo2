@@ -52,10 +52,11 @@ public class ExceptionHandlerAdvise {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BadRequest> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<BadRequest> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
 
         var body = new BadRequest();
         BeanUtils.copyProperties(e.getBody(), body);
+        body.setInstance(URI.create(request.getRequestURI()));
 
         var locale = LocaleContextHolder.getLocale();
         var errorDetailList = new ArrayList<ErrorDetail>();
