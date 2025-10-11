@@ -5,6 +5,7 @@ import com.example.blog.repository.article.ArticleRepository;
 import com.example.blog.repository.user.UserRepository;
 import com.example.blog.service.DateTimeService;
 import com.example.blog.service.exception.ResourceNotFoundException;
+import com.example.blog.service.exception.UnAuthorizedResourceAccessException;
 import com.example.blog.service.user.UserEntity;
 import com.example.blog.util.TestDateTimeUtil;
 import org.junit.jupiter.api.DisplayName;
@@ -177,6 +178,33 @@ class ArticleServiceTest {
         // ## Act & Assert ##
         assertThrows(ResourceNotFoundException.class, () -> {
             cut.update(expectedUser.getId(), invalidArticleId, "test_title_updated", "test_body_updated");
+        });
+    }
+
+    @Test
+    @DisplayName("update: 他人の記事を編集しようとしたとき UnauthorizedResourceAccessException を throw する")
+    void update_throwUnauthorizedResourceAccessException() {
+        // ## Arrange ##
+        var expectedUpdatedAt = TestDateTimeUtil.of(2020, 1, 10, 10, 10, 10);
+        when(mockDateTimeService.now()).thenReturn(expectedUpdatedAt.minusDays(1)).thenReturn(expectedUpdatedAt);
+
+        var author = new UserEntity();
+        author.setUsername("test_user1");
+        author.setPassword("test_password1");
+        author.setEnabled(true);
+        userRepository.insert(author);
+
+        var existingArticle = cut.create(author.getId(), "test_title", "test_body");
+
+        var otherUser = new UserEntity();
+        otherUser.setUsername("test_user2");
+        otherUser.setPassword("test_password2");
+        otherUser.setEnabled(true);
+        userRepository.insert(otherUser);
+
+        // ## Act & Assert ##
+        assertThrows(UnAuthorizedResourceAccessException.class, () -> {
+            cut.update(otherUser.getId(), existingArticle.getId(), "test_title_updated", "test_body_updated");
         });
     }
 }

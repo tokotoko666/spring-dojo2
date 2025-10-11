@@ -53,7 +53,6 @@ public class ArticleService {
 
         if (entity.getAuthor().getId() != loggedInUserId) {
             throw new UnAuthorizedResourceAccessException();
-
         }
 
         entity.setTitle(updatedTitle);
