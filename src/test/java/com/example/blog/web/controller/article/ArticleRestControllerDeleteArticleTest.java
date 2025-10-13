@@ -114,25 +114,19 @@ class ArticleRestControllerDeleteArticleTest {
     }
 
     @Test
-    @DisplayName("PUT /article/{articleId}: 自分が作成した記事以外の記事を編集しようとしたとき 403 を返す")
-    void updateArticle_403Forbidden_authorId() throws Exception {
+    @DisplayName("DELETE /article/{articleId}: 自分が作成した記事以外の記事を削除しようとしたとき 403 を返す")
+    void deleteArticle_403Forbidden_authorId() throws Exception {
         // ## Arrange ##
         var otherUser = userService.register("test_username2", "test_password2");
         var loggedInUserOtherUser = new LoggedInUser(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.isEnabled());
-        var bodyJson = """
-                {
-                  "title": "test_title_updated",
-                  "body": "test_body_updated"
-                }
-                """;
 
         // ## Act ##
         var actual = mockMvc.perform(
-                put("/articles/{articleId}", existingArticle.getId())
+                delete("/articles/{articleId}", existingArticle.getId())
                         .with(csrf())
                         .with(user(loggedInUserOtherUser))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(bodyJson));
+                        );
 
         // ## Assert ##
         actual.andExpect(status().isForbidden())
@@ -172,31 +166,6 @@ class ArticleRestControllerDeleteArticleTest {
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.detail").value("リソースが見つかりません"))
                 .andExpect(jsonPath("$.instance").value("/articles/" + invalidArticleId));
-        ;
-    }
-
-    @Test
-    @DisplayName("DELETE /article/{articleId}: 自分が作成した記事以外の記事を削除しようとしたとき 403 を返す")
-    void deleteArticle_403Forbidden_authorId() throws Exception {
-        // ## Arrange ##
-        var otherUser = userService.register("test_username2", "test_password2");
-        var loggedInUserOtherUser = new LoggedInUser(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.isEnabled());
-
-        // ## Act ##
-        var actual = mockMvc.perform(
-                delete("/articles/{articleId}", existingArticle.getId())
-                        .with(csrf())
-                        .with(user(loggedInUserOtherUser))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        );
-
-        // ## Assert ##
-        actual.andExpect(status().isForbidden())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.title").value("Forbidden"))
-                .andExpect(jsonPath("$.status").value(403))
-                .andExpect(jsonPath("$.detail").value("リソースへのアクセスが拒否されました"))
-                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()))
         ;
     }
 
