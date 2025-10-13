@@ -91,6 +91,29 @@ class ArticleRestControllerDeleteArticleTest {
     }
 
     @Test
+    @DisplayName("DELETE /articles/{articleId}: 未ログインのとき、401 Unauthorized を返す")
+    void deleteArticles_401Unauthorized() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        var actual = mockMvc.perform(
+                delete("/articles/{articleId}", existingArticle.getId())
+                        .with(csrf())
+                        // .with(user(loggedInAuthor))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        );
+
+        // ## Assert ##
+        actual
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Unauthorized"))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.detail").value("リクエストを実行するにはログインが必要です。"))
+                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()));
+    }
+
+    @Test
     @DisplayName("PUT /article/{articleId}: 自分が作成した記事以外の記事を編集しようとしたとき 403 を返す")
     void updateArticle_403Forbidden_authorId() throws Exception {
         // ## Arrange ##
