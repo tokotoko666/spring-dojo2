@@ -71,7 +71,7 @@ class ArticleRestControllerUpdateArticleTest {
     }
 
     @Test
-    @DisplayName("PUT /article/{articleId}: 新規記事の編集に成功する")
+    @DisplayName("PUT /article/{articleId}: 記事の編集に成功する")
     void updateArticle_200OK() throws Exception {
         // ## Arrange ##
         var expectedTitle = "test_title_updated";

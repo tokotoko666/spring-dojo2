@@ -66,7 +66,14 @@ public interface ArticleRepository {
               , body       = #{body}
               , updated_at = #{updatedAt}
             WHERE id = #{id}
-              AND user_id = #{author.id} 
+              AND user_id = #{author.id}
             """)
     void update(ArticleEntity entity);
+
+    @Delete("""
+            DELETE FROM articles
+            WHERE id = #{id}
+              AND user_id = #{author.id}
+            """)
+    void delete(ArticleEntity entity);
 }
