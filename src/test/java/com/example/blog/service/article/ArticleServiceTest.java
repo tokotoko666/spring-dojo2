@@ -246,4 +246,31 @@ class ArticleServiceTest {
             cut.delete(author.getId(), invalidArticleId);
         });
     }
+
+    @Test
+    @DisplayName("delete: 他人の記事を編集しようとしたとき UnauthorizedResourceAccessException を throw する")
+    void delete_throwUnauthorizedResourceAccessException() {
+        // ## Arrange ##
+        var expectedUpdatedAt = TestDateTimeUtil.of(2020, 1, 10, 10, 10, 10);
+        when(mockDateTimeService.now()).thenReturn(expectedUpdatedAt.minusDays(1)).thenReturn(expectedUpdatedAt);
+
+        var author = new UserEntity();
+        author.setUsername("test_user1");
+        author.setPassword("test_password1");
+        author.setEnabled(true);
+        userRepository.insert(author);
+
+        var existingArticle = cut.create(author.getId(), "test_title", "test_body");
+
+        var otherUser = new UserEntity();
+        otherUser.setUsername("test_user2");
+        otherUser.setPassword("test_password2");
+        otherUser.setEnabled(true);
+        userRepository.insert(otherUser);
+
+        // ## Act & Assert ##
+        assertThrows(UnAuthorizedResourceAccessException.class, () -> {
+            cut.delete(otherUser.getId(), existingArticle.getId());
+        });
+    }
 }
