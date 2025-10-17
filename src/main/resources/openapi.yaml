@@ -169,6 +169,32 @@ paths:
                 $ref: "#/components/schemas/ArticleListDTO"
         '500':
           $ref: "#/components/responses/InternalServerErrorResponse"
+  /articles/{articleId}:
+    get:
+      tags: [ articles ]
+      summary: 記事の詳細を取得します
+      description: >
+        記事の詳細を取得します。
+      operationId: getArticle
+      parameters:
+        - name: articleId
+          in: path
+          description: 記事のID
+          required: true
+          schema:
+            type: integer
+            format: int 64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleDTO"
+        '404':
+          $ref: "#/components/responses/NotFoundResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
 components:
   schemas:
     InternalServerError:
@@ -233,6 +259,7 @@ components:
             $ref: "#/components/schemas/ErrorDetail"
     Unauthorized:
       description: ログインが必要です。
+      type: object
       properties:
         type:
           type: string
@@ -253,6 +280,7 @@ components:
           example: /articles
     Forbidden:
       description: 権限がありません
+      type: object
       properties:
         type:
           type: string
@@ -270,6 +298,23 @@ components:
           type: string
           format: uri
           example: /articles
+    NotFound:
+      description: リソースが見つかりません
+      type: object
+      properties:
+        title:
+          type: string
+          default: NotFound
+        status:
+          type: integer
+          format: int32
+          default: 404
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+          example: /articles/123
     UserForm:
       type: object
       required:
@@ -383,6 +428,12 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/Forbidden"
+    NotFoundResponse:
+      description: NotFound
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/NotFound"
   securitySchemes:
     csrfProtectionHeader:
       description: >
