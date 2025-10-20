@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class ArticleRestControllerListArticlesTest {
+class ArticleRestControllerGetArticleTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,15 +40,14 @@ class ArticleRestControllerListArticlesTest {
     }
 
     @Test
-    @DisplayName("GET /articles: 記事の一覧を取得できる")
-    void listArticles_success() throws Exception {
+    @DisplayName("GET /articles/{articleUd}: 記事の詳細を取得できる")
+    void getArticle_success() throws Exception {
         // ## Arrange ##
         var expectedUser1 = userService.register("test_username1", "test_password1");
         var expectedArticle1 = articleService.create(expectedUser1.getId(),"test_title1", "test_body1");
-        var expectedArticle2 = articleService.create(expectedUser1.getId(),"test_title2", "test_body2");
 
         // ## Act ##
-        var actual = mockMvc.perform(get("/articles")
+        var actual = mockMvc.perform(get("/articles/{articleUd}", expectedArticle1.getId())
                 .contentType(MediaType.APPLICATION_JSON));
 
         // ## Assert ##
@@ -56,25 +55,14 @@ class ArticleRestControllerListArticlesTest {
         // response header
         actual
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        // response body
-        actual
-                .andExpect(jsonPath("$.items[0].id").value(expectedArticle1.getId()))
-                .andExpect(jsonPath("$.items[0].title").value(expectedArticle1.getTitle()))
-                .andExpect(jsonPath("$.items[0].createdAt").value(expectedArticle1.getCreatedAt().toString()))
-                .andExpect(jsonPath("$.items[0].updatedAt").value(expectedArticle1.getUpdatedAt().toString()))
-                .andExpect(jsonPath("$.items[0].author.id").value(expectedUser1.getId()))
-                .andExpect(jsonPath("$.items[0].author.username").value(expectedUser1.getUsername()));
-
-        actual
-                .andExpect(jsonPath("$.items[1].id").value(expectedArticle2.getId()))
-                .andExpect(jsonPath("$.items[1].title").value(expectedArticle2.getTitle()))
-                .andExpect(jsonPath("$.items[1].createdAt").value(expectedArticle2.getCreatedAt().toString()))
-                .andExpect(jsonPath("$.items[1].updatedAt").value(expectedArticle2.getUpdatedAt().toString()))
-                .andExpect(jsonPath("$.items[1].author.id").value(expectedUser1.getId()))
-                .andExpect(jsonPath("$.items[1].author.username").value(expectedUser1.getUsername()));
-
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(expectedArticle1.getId()))
+                .andExpect(jsonPath("$.title").value(expectedArticle1.getTitle()))
+                .andExpect(jsonPath("$.body").value(expectedArticle1.getBody()))
+                .andExpect(jsonPath("$.createdAt").value(expectedArticle1.getCreatedAt().toString()))
+                .andExpect(jsonPath("$.updatedAt").value(expectedArticle1.getUpdatedAt().toString()))
+                .andExpect(jsonPath("$.author.id").value(expectedUser1.getId()))
+                .andExpect(jsonPath("$.author.username").value(expectedUser1.getUsername()));
         // response header
     }
 }
