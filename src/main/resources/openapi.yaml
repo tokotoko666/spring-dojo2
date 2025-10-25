@@ -185,7 +185,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int 64
+            format: int64
       responses:
         '200':
           description: OK
@@ -210,7 +210,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int 64
+            format: int64
       security:
         - cookieAuth: []
         - csrfProtectionHeader: []
@@ -247,7 +247,7 @@ components:
           default: "Internal Server Error"
         status:
           type: integer
-          format: int 32
+          format: int32
           default: 500
         detail:
           type: string

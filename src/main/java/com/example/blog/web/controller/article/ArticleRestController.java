@@ -75,7 +75,7 @@ public class ArticleRestController implements ArticlesApi {
     }
 
     @Override
-    public ResponseEntity<ArticleDTO> getArticle(Integer articleId) {
+    public ResponseEntity<ArticleDTO> getArticle(Long articleId) {
         return articleService.findById(articleId)
                 .map(entity -> {
                     var userDTO = new UserDTO();
@@ -88,5 +88,23 @@ public class ArticleRestController implements ArticlesApi {
                     return ResponseEntity.ok(body);
                 })
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
+    public ResponseEntity<ArticleDTO> updateArticle(Long articleId, ArticleForm articleForm) {
+        var loggedInUser = (LoggedInUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        var updatedEntity = articleService.update(loggedInUser.getUserId(), articleId, articleForm.getTitle(), articleForm.getBody());
+
+        var userDTO = new UserDTO();
+        BeanUtils.copyProperties(updatedEntity.getAuthor(), userDTO);
+
+        var body = new ArticleDTO();
+        BeanUtils.copyProperties(updatedEntity, body);
+        body.setAuthor(userDTO);
+
+        return ResponseEntity.ok(body);
     }
 }

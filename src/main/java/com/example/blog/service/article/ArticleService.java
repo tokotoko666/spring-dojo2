@@ -40,4 +40,14 @@ public class ArticleService {
     public List<ArticleEntity> findAll() {
         return articleRepository.selectAll();
     }
+
+    @Transactional
+    public ArticleEntity update(long userId, long articleId, String title, String body) {
+        // TODO
+        var currentEntity = findById(articleId).orElseThrow();
+        currentEntity.setTitle(title);
+        currentEntity.setBody(body);
+        currentEntity.setUpdatedAt(dateTimeService.now());
+        return  currentEntity;
+    }
 }
