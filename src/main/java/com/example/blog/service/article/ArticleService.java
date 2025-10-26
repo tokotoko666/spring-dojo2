@@ -44,10 +44,13 @@ public class ArticleService {
     @Transactional
     public ArticleEntity update(long userId, long articleId, String title, String body) {
         // TODO
-        var currentEntity = findById(articleId).orElseThrow();
-        currentEntity.setTitle(title);
-        currentEntity.setBody(body);
-        currentEntity.setUpdatedAt(dateTimeService.now());
-        return  currentEntity;
+        var entity = findById(articleId).orElseThrow();
+        entity.setTitle(title);
+        entity.setBody(body);
+        entity.setUpdatedAt(dateTimeService.now());
+
+        articleRepository.update(entity);
+
+        return  entity;
     }
 }

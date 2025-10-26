@@ -59,4 +59,14 @@ public interface ArticleRepository {
     void insert(ArticleEntity entity);
 
 
+    @Update("""
+            UPDATE articles
+            SET
+               title      = #{title}
+              ,body       = #{body}
+              ,updated_at = #{updatedAt}
+            WHERE id = #{id}
+              AND user_id = #{author.id}
+            """)
+    void update(ArticleEntity currentEntity);
 }
