@@ -6,7 +6,7 @@ import com.example.blog.model.ArticleForm;
 import com.example.blog.model.ArticleListDTO;
 import com.example.blog.security.LoggedInUser;
 import com.example.blog.service.article.ArticleService;
-import com.example.blog.web.exception.ResourceNotFoundException;
+import com.example.blog.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,15 +64,14 @@ public class ArticleRestController implements ArticlesApi {
     }
 
     @Override
-    public ResponseEntity<ArticleDTO> updateArticle(Long articleId, ArticleForm articleForm) {
+    public ResponseEntity<ArticleDTO> updateArticle(Long articleId, ArticleForm form) {
         var loggedInUser = (LoggedInUser) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
 
-        return articleService.update(loggedInUser.getUserId(), articleId, articleForm.getTitle(), articleForm.getBody())
-                .map(ArticleMapper::toArticleDTO)
-                .map(ResponseEntity::ok)
-                .orElseThrow(ResourceNotFoundException::new);
+        var entity = articleService.update(loggedInUser.getUserId(), articleId, form.getTitle(), form.getBody());
+
+        return ResponseEntity.ok(ArticleMapper.toArticleDTO(entity));
     }
 }

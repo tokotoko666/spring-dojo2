@@ -161,7 +161,7 @@ class ArticleRestControllerUpdateArticleTest {
                 .andExpect(jsonPath("$.title").value("Forbidden"))
                 .andExpect(jsonPath("$.status").value(403))
                 .andExpect(jsonPath("$.detail").value("リソースへのアクセスが拒否されました"))
-                .andExpect(jsonPath("$.instance").value("/articles" + existingArticle.getId()));
+                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()));
         ;
     }
 

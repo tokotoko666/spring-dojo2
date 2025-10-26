@@ -2,7 +2,9 @@ package com.example.blog.service.article;
 
 import com.example.blog.repository.article.ArticleRepository;
 import com.example.blog.service.DateTimeService;
+import com.example.blog.service.exception.UnauthorizedResourceAccessException;
 import com.example.blog.service.user.UserEntity;
+import com.example.blog.service.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,18 +44,19 @@ public class ArticleService {
     }
 
     @Transactional
-    public Optional<ArticleEntity> update(long userId, long articleId, String title, String body) {
-        return findById(articleId)
-                .map(entity -> {
-                    entity.setTitle(title);
-                    entity.setBody(body);
-                    entity.setUpdatedAt(dateTimeService.now());
+    public ArticleEntity update(long loggedInUserId, long articleId, String title, String body) {
+         var entity = findById(articleId)
+                 .orElseThrow(ResourceNotFoundException::new);
 
-                    articleRepository.update(entity);
+         if (entity.getAuthor().getId() != loggedInUserId) {
+             throw new UnauthorizedResourceAccessException();
+         }
 
-                    return entity;
-                });
+        entity.setTitle(title);
+        entity.setBody(body);
+        entity.setUpdatedAt(dateTimeService.now());
+        articleRepository.update(entity);
 
-
+        return entity;
     }
 }
