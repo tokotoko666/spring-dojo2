@@ -274,9 +274,6 @@ components:
         [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html) に準拠しています。
       type: object
       properties:
-        type:
-          type: string
-          format: uri
         title:
           type: string
         status:
@@ -298,9 +295,6 @@ components:
       description: ログインが必要です。
       type: object
       properties:
-        type:
-          type: string
-          format: uri
         title:
           type: string
           default: Unauthorized
@@ -319,9 +313,6 @@ components:
       description: 権限がありません
       type: object
       properties:
-        type:
-          type: string
-          format: uri
         title:
           type: string
           default: Forbidden
