@@ -4,8 +4,8 @@ import java.time.*;
 
 public final class TestDateTimeUtil {
 
-    public static OffsetDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
-        var ldt = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
+    public static OffsetDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second) {
+        var ldt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
         var zoneId = ZoneId.of("Asia/Tokyo");
         return ZonedDateTime.of(ldt, zoneId).toOffsetDateTime();
     }

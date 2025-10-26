@@ -83,8 +83,8 @@ class ArticleRepositoryTest {
                 "test_title",
                 "test_body",
                 expectedUser,
-                TestDateTimeUtil.of(2020, 1, 1, 10, 30),
-                TestDateTimeUtil.of(2020, 1, 1, 10, 30)
+                TestDateTimeUtil.of(2020, 1, 1, 10, 20, 30),
+                TestDateTimeUtil.of(2020, 1, 1, 10, 20, 30)
         );
 
         // ## Act ##
@@ -127,8 +127,8 @@ class ArticleRepositoryTest {
             """)
     void selectAll_returnNotEmptyList() {
         // ## Arrange ##
-        var datetime1 = TestDateTimeUtil.of(2020, 1, 10, 10, 10);
-        var datetime2 = TestDateTimeUtil.of(2021, 1, 10, 10, 10);
+        var datetime1 = TestDateTimeUtil.of(2020, 1, 10, 10, 10, 10);
+        var datetime2 = TestDateTimeUtil.of(2021, 1, 10, 10, 10, 10);
 
         var user1 = new UserEntity();
         user1.setUsername("test_username1");

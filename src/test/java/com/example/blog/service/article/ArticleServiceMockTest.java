@@ -1,8 +1,6 @@
 package com.example.blog.service.article;
 
 import com.example.blog.repository.article.ArticleRepository;
-import com.example.blog.service.article.ArticleEntity;
-import com.example.blog.service.article.ArticleService;
 import com.example.blog.util.TestDateTimeUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +31,7 @@ class ArticleServiceMockTest {
     @Test
     public void mockPractice() {
         when(articleRepository.selectById(999)).thenReturn(Optional.of(
-                new ArticleEntity(999L, null, null, null, null, null )
+                new ArticleEntity(999L, null, null, null, null, null)
         ));
 
         assertThat(articleRepository.selectById(999))
@@ -54,8 +52,8 @@ class ArticleServiceMockTest {
                         "title_999",
                         "body_999",
                         null,
-                        TestDateTimeUtil.of(2022,1,1,10,0),
-                        TestDateTimeUtil.of(2022,2,1,11,0)
+                        TestDateTimeUtil.of(2022, 1, 1, 10, 0, 0),
+                        TestDateTimeUtil.of(2022, 2, 1, 11, 0, 0)
                 )
         ));
 

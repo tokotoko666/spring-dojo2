@@ -51,9 +51,9 @@ class ArticleRestControllerMockTest {
                 "title_999",
                 "content_999",
                 null,
-                TestDateTimeUtil.of(2022, 1, 2, 3, 4),
-                TestDateTimeUtil.of(2023, 1, 2, 3, 4)
-                );
+                TestDateTimeUtil.of(2022, 1, 2, 3, 4, 5),
+                TestDateTimeUtil.of(2023, 1, 2, 3, 4, 5)
+        );
 
         when(mockArticleService.findById(expected.getId())).thenReturn(Optional.of(expected));
 

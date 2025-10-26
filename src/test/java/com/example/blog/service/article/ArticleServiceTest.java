@@ -46,7 +46,7 @@ class ArticleServiceTest {
         expectedUser.setEnabled(true);
         userRepository.insert(expectedUser);
 
-        var expectedCurrentDateTime = TestDateTimeUtil.of(2020, 1, 2, 10, 20);
+        var expectedCurrentDateTime = TestDateTimeUtil.of(2020, 1, 2, 10, 20, 30);
         when(mockDatetimeService.now()).thenReturn(expectedCurrentDateTime);
 
         var expectedTitle = "test_article_title";
@@ -91,8 +91,8 @@ class ArticleServiceTest {
         // ## Arrange ##
 
         when(mockDatetimeService.now())
-                .thenReturn(TestDateTimeUtil.of(2020, 1, 10, 10, 10))
-                .thenReturn(TestDateTimeUtil.of(2021, 1, 10, 10, 10));
+                .thenReturn(TestDateTimeUtil.of(2020, 1, 10, 10, 10, 10))
+                .thenReturn(TestDateTimeUtil.of(2021, 1, 10, 10, 10, 10));
         var user1 = new UserEntity();
         user1.setUsername("test_username1");
         user1.setPassword("test_password1");
