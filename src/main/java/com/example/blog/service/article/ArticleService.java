@@ -28,7 +28,7 @@ public class ArticleService {
                 null,
                 title,
                 body,
-                new UserEntity(userId, null, null,true),
+                new UserEntity(userId, null, null, true),
                 timestamp,
                 timestamp
         );
@@ -42,15 +42,18 @@ public class ArticleService {
     }
 
     @Transactional
-    public ArticleEntity update(long userId, long articleId, String title, String body) {
-        // TODO
-        var entity = findById(articleId).orElseThrow();
-        entity.setTitle(title);
-        entity.setBody(body);
-        entity.setUpdatedAt(dateTimeService.now());
+    public Optional<ArticleEntity> update(long userId, long articleId, String title, String body) {
+        return findById(articleId)
+                .map(entity -> {
+                    entity.setTitle(title);
+                    entity.setBody(body);
+                    entity.setUpdatedAt(dateTimeService.now());
 
-        articleRepository.update(entity);
+                    articleRepository.update(entity);
 
-        return  entity;
+                    return entity;
+                });
+
+
     }
 }

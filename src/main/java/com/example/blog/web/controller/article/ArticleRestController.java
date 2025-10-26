@@ -96,15 +96,17 @@ public class ArticleRestController implements ArticlesApi {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
-        var updatedEntity = articleService.update(loggedInUser.getUserId(), articleId, articleForm.getTitle(), articleForm.getBody());
 
-        var userDTO = new UserDTO();
-        BeanUtils.copyProperties(updatedEntity.getAuthor(), userDTO);
+        return articleService.update(loggedInUser.getUserId(), articleId, articleForm.getTitle(), articleForm.getBody())
+                .map(updatedEntity -> {
+                    var userDTO = new UserDTO();
+                    BeanUtils.copyProperties(updatedEntity.getAuthor(), userDTO);
 
-        var body = new ArticleDTO();
-        BeanUtils.copyProperties(updatedEntity, body);
-        body.setAuthor(userDTO);
+                    var body = new ArticleDTO();
+                    BeanUtils.copyProperties(updatedEntity, body);
+                    body.setAuthor(userDTO);
 
-        return ResponseEntity.ok(body);
+                    return ResponseEntity.ok(body);
+                }).orElseThrow(ResourceNotFoundException::new);
     }
 }
