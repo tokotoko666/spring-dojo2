@@ -31,11 +31,11 @@ public interface ArticleRepository {
             </script>
             """)
     @Results(value = {
-            @Result(column = "article__id", property="id"),
-            @Result(column = "article__title", property="title"),
-            @Result(column = "article__body", property="body"),
-            @Result(column = "article__created_at", property="createdAt"),
-            @Result(column = "article__updated_at", property="updatedAt"),
+            @Result(column = "article__id", property = "id"),
+            @Result(column = "article__title", property = "title"),
+            @Result(column = "article__body", property = "body"),
+            @Result(column = "article__created_at", property = "createdAt"),
+            @Result(column = "article__updated_at", property = "updatedAt"),
 
             @Result(column = "user__id", property = "author.id"),
             @Result(column = "user__username", property = "author.username"),
@@ -69,4 +69,11 @@ public interface ArticleRepository {
               AND user_id = #{author.id}
             """)
     void update(ArticleEntity currentEntity);
+
+    @Delete("""
+            DELETE FROM articles
+            WHERE id = #{id}
+              AND user_id = #{author.id}
+            """)
+    void delete(ArticleEntity entity);
 }
