@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.aMapWithSize;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -125,7 +126,7 @@ public class ArticleRestController500InternalServerErrorTest {
     }
 
     @Test
-    @DisplayName("PUT: /articles: 500 InternalServerError で stackTrace が露出しない")
+    @DisplayName("PUT: /articles/{articleId}: 500 InternalServerError で stackTrace が露出しない")
     void putArticle_500() throws Exception {
         // ## Arrange ##
         var userId = 999L;
@@ -148,6 +149,33 @@ public class ArticleRestController500InternalServerErrorTest {
                         .with(user(new LoggedInUser(userId, "test_user", "test_password", true)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bodyJson)
+        );
+
+        // ## Assert ##
+        actual
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Internal Server Error"))
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.detail").isEmpty())
+                .andExpect(jsonPath("$.instance").value("/articles/" + articleId))
+                .andExpect(jsonPath("$", aMapWithSize(4)));
+    }
+
+    @Test
+    @DisplayName("DELETE: /articles/{articleId}: 500 InternalServerError で stackTrace が露出しない")
+    void deleteArticle_500() throws Exception {
+        // ## Arrange ##
+        var userId = 999L;
+        long articleId = 9999L;
+        doThrow(RuntimeException.class).when(articleService).delete(userId, articleId);
+
+        // ## Act ##
+        var actual = mockMvc.perform(
+                delete("/articles/{articleId}", articleId)
+                        .with(csrf())
+                        .with(user(new LoggedInUser(userId, "test_user", "test_password", true)))
+                        .contentType(MediaType.APPLICATION_JSON)
         );
 
         // ## Assert ##
