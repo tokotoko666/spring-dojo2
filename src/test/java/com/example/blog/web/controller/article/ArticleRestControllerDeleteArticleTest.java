@@ -139,6 +139,30 @@ class ArticleRestControllerDeleteArticleTest {
     }
 
     @Test
+    @DisplayName("DELETE /articles/{articleId}: リクエストに CSRF トークンが付加されていないとき 403 Forbidden を返す")
+    void deleteArticle_403Forbidden_csrf() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        var actual = mockMvc.perform(
+                delete("/articles/{articleId}", existingArticle.getId())
+                        // .with(csrf())
+                        .with(user(loggedInAuthor))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // ## Assert ##
+        actual
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Forbidden"))
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.detail").value("CSRFトークンが不正です"))
+                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()));
+        ;
+    }
+
+    @Test
     @DisplayName("PUT /articles/{articleId}: 指定されたIDの記事が存在しないとき、404を返す")
     void updateArticle_404NotFound() throws Exception {
         // ## Arrange ##
@@ -169,42 +193,6 @@ class ArticleRestControllerDeleteArticleTest {
                 .andExpect(jsonPath("$.instance").value("/articles/" + invalidArticleId));
         ;
     }
-
-
-
-    @Test
-    @DisplayName("PUT /articles/{articleId}: リクエストに CSRF トークンが付加されていないとき 403 Forbidden を返す")
-    void updateArticle_403Forbidden_csrf() throws Exception {
-        // ## Arrange ##
-        var body = """
-                {
-                  "title": "test_body_updated",
-                  "body": "test_body_updated"
-                }
-                """;
-
-        // ## Act ##
-        var actual = mockMvc.perform(
-                put("/articles/{articleId}", existingArticle.getId())
-                        // .with(csrf())
-                        .with(user(loggedInAuthor))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body)
-        );
-
-        // ## Assert ##
-        actual
-                .andExpect(status().isForbidden())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.title").value("Forbidden"))
-                .andExpect(jsonPath("$.status").value(403))
-                .andExpect(jsonPath("$.detail").value("CSRFトークンが不正です"))
-                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()));
-        ;
-    }
-
-
-
 
     @Test
     @DisplayName("PUT /articles/{articleId}: リクエストの title フィールドがバリデーションNGのとき、400 BadRequest")
