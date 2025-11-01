@@ -71,7 +71,7 @@ class ArticleRestControllerDeleteArticleTest {
     @Test
     @DisplayName("DELETE" +
             " /articles/{articleId}: 記事の削除に成功する")
-    void updateArticle_204NoContent() throws Exception {
+    void deleteArticle_204NoContent() throws Exception {
         // ## Arrange ##
 
         // ## Act ##
@@ -87,6 +87,29 @@ class ArticleRestControllerDeleteArticleTest {
                 .andExpect(status().isNoContent())
                 .andExpect(content().string(is(emptyString())))
         ;
+    }
+
+    @Test
+    @DisplayName("DELETE /articles/{articleId}: 未ログインのとき、401 Unauthorized を返す")
+    void deleteArticle_401Unauthorized() throws Exception {
+        // ## Arrange ##
+
+        // ## Act ##
+        var actual = mockMvc.perform(
+                delete("/articles/{articleId}", existingArticle.getId())
+                        .with(csrf())
+                        // .with(user(loggedInAuthor))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // ## Assert ##
+        actual
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Unauthorized"))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.detail").value("リクエストを実行するにはログインが必要です"))
+                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()));
     }
 
     @Test
@@ -186,35 +209,7 @@ class ArticleRestControllerDeleteArticleTest {
     }
 
 
-    @Test
-    @DisplayName("PUT /articles/{articleId}: 未ログインのとき、401 Unauthorized を返す")
-    void updateArticle_401Unauthorized() throws Exception {
-        // ## Arrange ##
-        var body = """
-                {
-                  "title": "test_title_updated",
-                  "body": "test_body_updated"
-                }
-                """;
 
-        // ## Act ##
-        var actual = mockMvc.perform(
-                put("/articles/{articleId}", existingArticle.getId())
-                        .with(csrf())
-                        // .with(user(loggedInAuthor))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body)
-        );
-
-        // ## Assert ##
-        actual
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.title").value("Unauthorized"))
-                .andExpect(jsonPath("$.status").value(401))
-                .andExpect(jsonPath("$.detail").value("リクエストを実行するにはログインが必要です"))
-                .andExpect(jsonPath("$.instance").value("/articles/" + existingArticle.getId()));
-    }
 
     @Test
     @DisplayName("PUT /articles/{articleId}: リクエストの title フィールドがバリデーションNGのとき、400 BadRequest")
