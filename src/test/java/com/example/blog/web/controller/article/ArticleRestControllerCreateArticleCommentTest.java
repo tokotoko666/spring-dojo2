@@ -110,7 +110,7 @@ class ArticleRestControllerCreateArticleCommentTest {
                 .andExpect(jsonPath("$.title").value("Bad Request"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.detail").value("Invalid request content."))
-                .andExpect(jsonPath("$.instance").value("/article/%d/comments".formatted(article.getId())))
+                .andExpect(jsonPath("$.instance").value("/articles/%d/comments".formatted(article.getId())))
                 .andExpect(jsonPath("$.errors", hasItem(
                         allOf(
                                 hasEntry("pointer", "#/body"),

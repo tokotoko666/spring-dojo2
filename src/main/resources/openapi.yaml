@@ -515,6 +515,7 @@ components:
         body:
           description: ブログ記事へのコメントの本文
           type: string
+          minLength: 1
     ArticleCommentDTO:
       type: object
       properties:
