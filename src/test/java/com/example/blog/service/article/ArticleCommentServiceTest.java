@@ -35,7 +35,7 @@ class ArticleCommentServiceTest {
     private ArticleCommentService cut;
 
     @Test
-    @DisplayName("create: 記事の登録に成功するとデータベースの articles テーブルにレコードが insert される")
+    @DisplayName("create: article_comments テーブルにレコードが insert される")
     void create_success() {
         // ## Arrange ##
         var expectedCurrentDateTime = TestDateTimeUtil.of(2020, 1, 2, 10, 20, 30);
