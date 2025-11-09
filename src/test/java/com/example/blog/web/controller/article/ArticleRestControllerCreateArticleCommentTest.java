@@ -182,7 +182,7 @@ class ArticleRestControllerCreateArticleCommentTest {
     }
 
     @Test
-    @DisplayName("POST /article/{articleId}/comments: 指定されたIDの記事が存在しないとき、404を返す")
+    @DisplayName("POST /articles/{articleId}/comments: 指定されたIDの記事が存在しないとき、404を返す")
     void createArticleComments_404NotFound() throws Exception {
         // ## Arrange ##
         var invalidArticleId = 0;
