@@ -4,6 +4,7 @@ import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.config.PasswordEncoderConfig;
 import com.example.blog.repository.article.ArticleRepository;
 import com.example.blog.service.DateTimeService;
+import com.example.blog.service.exception.ResourceNotFoundException;
 import com.example.blog.service.user.UserService;
 import com.example.blog.util.TestDateTimeUtil;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @MybatisDefaultDatasourceTest
@@ -59,5 +61,22 @@ class ArticleCommentServiceTest {
                 .ignoringFields("password")
                 .isEqualTo(commentAuthor);
         assertThat(actual.getCreatedAt()).isEqualTo(expectedCurrentDateTime);
+    }
+
+    @Test
+    @DisplayName("create: 指定された記事IDが存在しないとき、ResourceNotFoundException を投げる")
+    void create_ArticleDoesNotExist() {
+        // ## Arrange ##
+        var expectedCurrentDateTime = TestDateTimeUtil.of(2020, 1, 2, 10, 20, 30);
+        when(mockDateTimeService.now()).thenReturn(expectedCurrentDateTime);
+
+        var commentAuthor = userService.register("test_username2", "test_password");
+        var expectedComment = "コメントしました";
+
+        // ## Act ##
+        // ## Assert ##
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cut.create(commentAuthor.getId(), 0, "test_comment_body");
+        });
     }
 }
