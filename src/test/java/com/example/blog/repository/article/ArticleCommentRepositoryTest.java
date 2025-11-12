@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @MybatisDefaultDatasourceTest
 class ArticleCommentRepositoryTest {
@@ -26,31 +25,72 @@ class ArticleCommentRepositoryTest {
     @Autowired
     private ArticleRepository articleRepository;
 
-    private ArticleCommentEntity comment;
+    private ArticleEntity article1;
+    private ArticleCommentEntity article1Comment1;
+    private ArticleCommentEntity article1Comment2;
+    private ArticleCommentEntity article2Comment1;
+
 
     @BeforeEach
     void beforeEach() {
-        var articleAuthor = new UserEntity(null, "test_username1", "test_password1", true);
-        userRepository.insert(articleAuthor);
+        // article1 -> comment11, comment12  -< search target
+        // article2 -> comment21             -< dummy
+        var articleAuthor1 = new UserEntity(null, "test_username1", "test_password1", true);
+        userRepository.insert(articleAuthor1);
 
-        var article = new ArticleEntity(
+        article1 = new ArticleEntity(
                 null,
                 "test_title",
                 "test_body",
-                articleAuthor,
+                articleAuthor1,
                 TestDateTimeUtil.of(2020, 1, 1, 10, 30, 40),
                 TestDateTimeUtil.of(2021, 1, 1, 10, 30, 40)
         );
-        articleRepository.insert(article);
+        articleRepository.insert(article1);
 
-        var commentAuthor = new UserEntity(null, "test_username2", "test_password2", true);
-        userRepository.insert(commentAuthor);
+        var commentAuthor11 = new UserEntity(null, "test_username11", "test_password", true);
+        userRepository.insert(commentAuthor11);
 
-        comment = new ArticleCommentEntity(
+        article1Comment1 = new ArticleCommentEntity(
                 null,
-                "test_comment_body",
-                article,
-                commentAuthor,
+                "test_comment_body11",
+                article1,
+                commentAuthor11,
+                TestDateTimeUtil.of(2022, 1, 1, 10, 30, 40)
+        );
+
+        var commentAuthor12 = new UserEntity(null, "test_username12", "test_password", true);
+        userRepository.insert(commentAuthor12);
+
+        article1Comment2 = new ArticleCommentEntity(
+                null,
+                "test_comment_body12",
+                article1,
+                commentAuthor11,
+                TestDateTimeUtil.of(2022, 1, 1, 10, 30, 40)
+        );
+
+        var articleAuthor2 = new UserEntity(null, "test_username2", "test_password2", true);
+        userRepository.insert(articleAuthor2);
+
+        var article2 = new ArticleEntity(
+                null,
+                "test_title",
+                "test_body",
+                articleAuthor2,
+                TestDateTimeUtil.of(2020, 1, 1, 10, 30, 40),
+                TestDateTimeUtil.of(2021, 1, 1, 10, 30, 40)
+        );
+        articleRepository.insert(article2);
+
+        var commentAuthor21 = new UserEntity(null, "test_username21", "test_password", true);
+        userRepository.insert(commentAuthor21);
+
+        article2Comment1 = new ArticleCommentEntity(
+                null,
+                "test_comment_body21",
+                article2,
+                commentAuthor21,
                 TestDateTimeUtil.of(2022, 1, 1, 10, 30, 40)
         );
     }
@@ -61,14 +101,14 @@ class ArticleCommentRepositoryTest {
         // ## Arrange ##
 
         // ## Act ##
-        cut.insert(comment);
+        cut.insert(article1Comment1);
 
         // ## Assert ##
-        var actualOpt = cut.selectById(comment.getId());
+        var actualOpt = cut.selectById(article1Comment1.getId());
         assertThat(actualOpt).hasValueSatisfying(actualEntity -> {
             assertThat(actualEntity).usingRecursiveComparison()
                     .ignoringFields("author.password", "article.author.password")
-                    .isEqualTo(comment);
+                    .isEqualTo(article1Comment1);
         });
     }
 
@@ -76,16 +116,16 @@ class ArticleCommentRepositoryTest {
     @DisplayName("selectById:指定した記事コメントIDが存在するとき、記事コメントを返す")
     void selectById_success() {
         // ## Arrange ##
-        cut.insert(comment);
+        cut.insert(article1Comment1);
 
         // ## Act ##
-        var actualOpt = cut.selectById(comment.getId());
+        var actualOpt = cut.selectById(article1Comment1.getId());
 
         // ## Assert ##
         assertThat(actualOpt).hasValueSatisfying(actualEntity -> {
             assertThat(actualEntity).usingRecursiveComparison()
                     .ignoringFields("author.password", "article.author.password")
-                    .isEqualTo(comment);
+                    .isEqualTo(article1Comment1);
         });
     }
 
@@ -93,7 +133,7 @@ class ArticleCommentRepositoryTest {
     @DisplayName("selectById:指定した記事コメントIDが存在しないとき、空の Optional を返す")
     void selectById_returnEmpty() {
         // ## Arrange ##
-        cut.insert(comment); // dummy record
+        cut.insert(article1Comment1); // dummy record
         var notInsertedId = 0;
 
         // ## Act ##
@@ -101,5 +141,26 @@ class ArticleCommentRepositoryTest {
 
         // ## Assert ##
         assertThat(actualOpt).isEmpty();
+    }
+
+    @Test
+    @DisplayName("selectByArticleId: 指定した記事IDにコメントが存在するとき、記事コメントのリストを返す")
+    void selectByArticleId_success() {
+        // ## Arrange ##
+        cut.insert(article1Comment1);
+        cut.insert(article1Comment2);
+        cut.insert(article2Comment1);
+
+        // ## Act ##
+        var actual = cut.selectByArticleId(article1.getId());
+
+        // ## Assert ##
+        assertThat(actual).hasSize(2);
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .ignoringFields("author.password", "article.author.password")
+                .isEqualTo(article1Comment1);
+        assertThat(actual.get(1)).usingRecursiveComparison()
+                .ignoringFields("author.password", "article.author.password")
+                .isEqualTo(article1Comment2);
     }
 }
