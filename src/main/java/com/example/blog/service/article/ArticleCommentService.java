@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 public class ArticleCommentService {
     public ArticleCommentEntity create(long userId, Long articleId, @NotNull String body) {
         return new ArticleCommentEntity(
-                userId,
+                null,
                 body,
                 new ArticleEntity(articleId, "", "", null, null, null),
                 new UserEntity(userId, "", "", true),
