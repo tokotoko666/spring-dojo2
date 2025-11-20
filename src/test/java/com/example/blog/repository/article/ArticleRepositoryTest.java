@@ -84,7 +84,7 @@ class ArticleRepositoryTest {
                 "test_body",
                 expectedUser,
                 TestDateTimeUtil.of(2020, 1, 1, 10, 20, 30),
-                TestDateTimeUtil.of(2020, 1, 1, 10, 20, 30)
+                TestDateTimeUtil.of(2021, 1, 1, 10, 20, 30)
         );
 
         // ## Act ##
