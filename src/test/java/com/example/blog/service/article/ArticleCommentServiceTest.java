@@ -38,10 +38,6 @@ class ArticleCommentServiceTest {
         var commentAuthor = userService.register("test_username2", "test_password");
         var article = articleService.create(articleAuthor.getId(), "test_title", "test_body");
 
-
-        var expectedTitle = "test_article_title";
-        var expectedBody = "test_article_body";
-
         // ## Act ##
         var expectedComment = "コメントしました";
         var actual = cut.create(commentAuthor.getId(), article.getId(), expectedComment);
