@@ -1,8 +1,11 @@
 package com.example.blog.web.controller.article;
 
 import com.example.blog.security.LoggedInUser;
+import com.example.blog.service.article.ArticleEntity;
 import com.example.blog.service.article.ArticleService;
+import com.example.blog.service.user.UserEntity;
 import com.example.blog.service.user.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,19 @@ class ArticleRestControllerCreateArticleCommentTest {
     @Autowired
     private ArticleService articleService;
 
+    private ArticleEntity article;
+    private LoggedInUser loggedInCommentAuthor;
+    private UserEntity commentAuthor;
+
+    @BeforeEach
+    void beforeEach() {
+        var articleAuthor = userService.register("test_username1", "test_password1");
+        article = articleService.create(articleAuthor.getId(), "test_article_title", "test_article_body");
+
+        commentAuthor = userService.register("test_username2", "test_password2");
+        loggedInCommentAuthor = new LoggedInUser(commentAuthor.getId(), commentAuthor.getUsername(), commentAuthor.getPassword(), commentAuthor.isEnabled());
+    }
+
     @Test
     void setup() {
         // ## Arrange ##
@@ -47,11 +63,6 @@ class ArticleRestControllerCreateArticleCommentTest {
     @DisplayName("POST /articles/{articleId}/comments: 新規コメントの作成に成功する")
     void createArticleComment_201Created() throws Exception {
         // ## Arrange ##
-        var articleAuthor = userService.register("test_username1", "test_password1");
-        var article = articleService.create(articleAuthor.getId(), "test_article_title", "test_article_body");
-
-        var commentAuthor = userService.register("test_username2", "test_password2");
-        var loggedInCommentAuthor = new LoggedInUser(commentAuthor.getId(), commentAuthor.getUsername(), commentAuthor.getPassword(), commentAuthor.isEnabled());
         var expectedBody = "記事にコメントをしました";
         var body = """
                 {
@@ -72,7 +83,7 @@ class ArticleRestControllerCreateArticleCommentTest {
         actual
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("Location", matchesPattern("/articles/" + article.getId() + "/comments/\\d")))
+                .andExpect(header().string("Location", matchesPattern("/articles/" + article.getId() + "/comments/\\d+")))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.body").value(expectedBody))
                 .andExpect(jsonPath("$.author.id").value(commentAuthor.getId()))
@@ -85,11 +96,6 @@ class ArticleRestControllerCreateArticleCommentTest {
     @DisplayName("POST /articles/{articleId}/comments: リクエストの body フィールドが空のとき、400 BadRequest")
     void createArticleComments_400BadRequest() throws Exception {
         // ## Arrange ##
-        var articleAuthor = userService.register("test_username1", "test_password1");
-        var article = articleService.create(articleAuthor.getId(), "test_article_title", "test_article_body");
-
-        var commentAuthor = userService.register("test_username2", "test_password2");
-        var loggedInCommentAuthor = new LoggedInUser(commentAuthor.getId(), commentAuthor.getUsername(), commentAuthor.getPassword(), commentAuthor.isEnabled());
         var body = """
                 {
                   "body": ""
