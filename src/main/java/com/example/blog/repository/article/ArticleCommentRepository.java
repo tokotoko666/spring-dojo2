@@ -3,6 +3,7 @@ package com.example.blog.repository.article;
 import com.example.blog.service.article.ArticleCommentEntity;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -60,4 +61,6 @@ public interface ArticleCommentRepository {
             @Result(column = "comment__author__enabled", property = "author.enabled"),
     })
     Optional<ArticleCommentEntity> selectById(long user_id);
+
+    List<ArticleCommentEntity> selectByArticleId(long articleId);
 }
