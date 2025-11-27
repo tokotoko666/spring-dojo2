@@ -95,4 +95,17 @@ class ArticleCommentServiceTest {
         assertThat(actual.get(0)).isEqualTo(comment1);
         assertThat(actual.get(1)).isEqualTo(comment2);
     }
+
+    @Test
+    @DisplayName("findByArticleId: 指定された記事IDの記事が存在しないとき、ResourceNotFoundException を投げる")
+    void findByArticleId_invalidArticleId() {
+        // ## Arrange ##
+
+        // ## Act ##
+
+        // ## Assert ##
+        assertThrows(ResourceNotFoundException.class, () -> {
+            var actual = cut.findByArticleId(0);
+        });
+    }
 }
