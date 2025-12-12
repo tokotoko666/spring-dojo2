@@ -17,8 +17,8 @@ tags:
   - name: article-comments
     description: ブログ記事のコメント関連の API
 paths:
- /csrf-cookie:
-   get:
+  /csrf-cookie:
+    get:
       tags: [ csrf-protection ]
       operationId: getCsrfCookie
       summary: CSRF Cookie の取得
@@ -28,279 +28,322 @@ paths:
         POST リクエストを実行するときは、受け取った XSRF-TOKEN の値を X-XSRF-TOKEN ヘッダーに設定する必要があります。
         XSRF-TOKEN の値は POST リクエストの度に取得し直す必要はなく、同じ値を何度も使うことができます。
       responses:
-       '204':
-        description: No Content
-        headers:
-          Set-Cookie:
-            description: CSRF 対策に利用する XSRF-TOKEN という Cookieが含まれています
-            schema:
-              type: string
-              example: XSRF-TOKEN=4ee8188f-2873-46cb-937f-7464ebf143e7; Path=/
-        content:
-          {}
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
- /login:
-   post:
-     description: ログインをします
-     tags: [login-logout]
-     operationId: login
-     security:
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     requestBody:
-       content:
-         application/json:
-           schema:
-             type: object
-             required:
-               - username
-               - password
-             properties:
-               username:
-                 type: string
-                 example: username123
-               password:
-                 type: string
-                 example: password123
-     responses:
-       '200':
-        description: OK
-        content:
-          application/json: {}
-       '401':
-        description: Unauthorized
-        content:
-          application/json: {}
-       '500':
+        '204':
+          description: No Content
+          headers:
+            Set-Cookie:
+              description: CSRF 対策に利用する XSRF-TOKEN という Cookieが含まれています
+              schema:
+                type: string
+                example: XSRF-TOKEN=4ee8188f-2873-46cb-937f-7464ebf143e7; Path=/
+          content:
+            { }
+        '500':
           $ref: "#/components/responses/InternalServerErrorResponse"
- /logout:
-   post:
-     description: ログアウトをします
-     tags: [login-logout]
-     operationId: logout
-     security:
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     responses:
-       '200':
-         description: OK
-         content:
-           application/json: {}
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
- /users:
-   post:
-     description: ユーザーを登録します
-     tags: [users]
-     operationId: createUser
-     security:
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     requestBody:
-       content:
-         application/json:
-           schema:
-             $ref: "#/components/schemas/UserForm"
-     responses:
-       '201':
-         description: Created
-         headers:
-           Location:
-             description: 作成されたユーザーのURI
-             schema:
-               type: string
-               example: "/users/123"
-         content:
-           application/json:
-             schema:
-               $ref : "#/components/schemas/UserDTO"
-       '400':
-         $ref: "#/components/responses/BadRequestResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
- /articles:
-   post:
-     tags: [ articles ]
-     summary: 記事を作成します
-     description: body と title を指定して記事を作成します。ログインが必要です。
-     operationId: creteArticle
-     security:
-       - cookieAuth: []
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     requestBody:
-       content:
-         application/json:
-           schema:
-             $ref: "#/components/schemas/ArticleForm"
-     responses:
-       '201':
-         description: Created
-         headers:
-           Location:
-             description: 作成された記事のURI
-             schema:
-               type: string
-               example: /articles/123
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleDTO"
-       '400':
-         $ref: "#/components/responses/BadRequestResponse"
-       '401':
-         $ref: "#/components/responses/UnauthorizedResponse"
-       '403':
-         $ref: "#/components/responses/ForbiddenResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
-   get:
-     tags: [articles]
-     summary: 記事の一覧を取得します
-     description: >
-       記事の一覧を取得します。
-       パフォーマンス対策により、記事本文はレスポンスに含まれません。
-     operationId: :listArticles
-     responses:
-       '200':
-         description: OK
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleListDTO"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
- /articles/{articleId}:
-   get:
-     tags: [ articles ]
-     summary: 記事の詳細を取得します
-     description: 記事の詳細を取得します。
-     operationId: getArticle
-     parameters:
-       - $ref: "#/components/parameters/ArticleId"
-     responses:
-       '200':
-         description: OK
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleDTO"
-       '404':
-         $ref: "#/components/responses/NotFoundResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
-   put:
-     tags: [ articles ]
-     summary: 記事を更新します
-     description: 記事を更新します。
-     operationId: updateArticle
-     parameters:
-       - $ref: "#/components/parameters/ArticleId"
-     security:
-       - cookieAuth: []
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     requestBody:
-       content:
-         application/json:
-           schema:
-             $ref: "#/components/schemas/ArticleForm"
-     responses:
-       '200':
-         description: OK
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleDTO"
-       '400':
-         $ref: "#/components/responses/BadRequestResponse"
-       '401':
-         $ref: "#/components/responses/UnauthorizedResponse"
-       '403':
-         $ref: "#/components/responses/ForbiddenResponse"
-       '404':
-         $ref: "#/components/responses/NotFoundResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
-   delete:
-     tags: [ articles ]
-     summary: 記事を削除します
-     description: 記事を削除します。
-     operationId: deleteArticle
-     parameters:
-       - $ref: "#/components/parameters/ArticleId"
-     security:
-       - cookieAuth: []
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     responses:
-       '204':
-         description: NoContent
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleDTO"
-       '401':
-         $ref: "#/components/responses/UnauthorizedResponse"
-       '403':
-         $ref: "#/components/responses/ForbiddenResponse"
-       '404':
-         $ref: "#/components/responses/NotFoundResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
- /articles/{articleId}/comments:
-   post:
-     tags: [ article-comments ]
-     summary: 記事のコメントを作成します。
-     description: 指定した記事に対するコメントをログインユーザーで作成します
-     operationId: createComment
-     parameters:
-       - $ref: "#/components/parameters/ArticleId"
-     requestBody:
-       required: true
-       content:
-         application/json:
-           schema:
-             $ref: "#/components/schemas/ArticleCommentForm"
-     security:
-       - csrfProtectionHeader: []
-       - csrfProtectionCookie: []
-     responses:
-       '201':
-         description: Created
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleCommentDTO"
-       '400':
-         $ref: "#/components/responses/BadRequestResponse"
-       '401':
-         $ref: "#/components/responses/UnauthorizedResponse"
-       '403':
-         $ref: "#/components/responses/ForbiddenResponse"
-       '404':
-         $ref: "#/components/responses/NotFoundResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
-   get:
-     tags: [ article-comments ]
-     summary: 指定した記事のコメント一覧を取得します
-     description: 指定した記事のコメント一覧を取得します
-     operationId: listArticleComments
-     parameters:
-       - $ref: "#/components/parameters/ArticleId"
-     responses:
-       '200':
-         description: OK
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/ArticleCommentListDTO"
-       '404':
-         $ref: "#/components/responses/NotFoundResponse"
-       '500':
-         $ref: "#/components/responses/InternalServerErrorResponse"
+  /login:
+    post:
+      description: ログインをします
+      tags: [ login-logout ]
+      operationId: login
+      security:
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: username123
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: { }
+        '401':
+          description: Unauthorized
+          content:
+            application/json: { }
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+  /logout:
+    post:
+      description: ログアウトをします
+      tags: [ login-logout ]
+      operationId: logout
+      security:
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: { }
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+  /users:
+    post:
+      description: ユーザーを登録します
+      tags: [ users ]
+      operationId: createUser
+      security:
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserForm"
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: 作成されたユーザーのURI
+              schema:
+                type: string
+                example: "/users/123"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
+        '400':
+          $ref: "#/components/responses/BadRequestResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+  /users/me/image-upload-url:
+    get:
+      description: ユーザーのプロフィール画像をアップロードするためのURLを取得します
+      tags: [ users ]
+      operationId: getProfileImageUploadURL
+      security:
+        - cookieAuth: [ ]
+      parameters:
+        - name: fileName
+          in: query
+          description: アップロードするファイル名
+          required: true
+          schema:
+            type: string
+            example: my-profile.png
+        - name: contentType
+          in: query
+          description: アップロードするファイルの MIME タイプ
+          required: true
+          schema:
+            type: string
+            example: image/png
+        - name: contentLength
+          in: query
+          description: アップロードするファイルのサイズ
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 104892
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfileImageUploadURLDTO"
+        '400':
+          $ref: "#/components/responses/BadRequestResponse"
+        '401':
+          $ref: "#/components/responses/UnauthorizedResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+  /articles:
+    post:
+      tags: [ articles ]
+      summary: 記事を作成します
+      description: body と title を指定して記事を作成します。ログインが必要です。
+      operationId: creteArticle
+      security:
+        - cookieAuth: [ ]
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleForm"
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: 作成された記事のURI
+              schema:
+                type: string
+                example: /articles/123
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleDTO"
+        '400':
+          $ref: "#/components/responses/BadRequestResponse"
+        '401':
+          $ref: "#/components/responses/UnauthorizedResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [ articles ]
+      summary: 記事の一覧を取得します
+      description: >
+        記事の一覧を取得します。
+        パフォーマンス対策により、記事本文はレスポンスに含まれません。
+      operationId: :listArticles
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleListDTO"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+  /articles/{articleId}:
+    get:
+      tags: [ articles ]
+      summary: 記事の詳細を取得します
+      description: 記事の詳細を取得します。
+      operationId: getArticle
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleDTO"
+        '404':
+          $ref: "#/components/responses/NotFoundResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    put:
+      tags: [ articles ]
+      summary: 記事を更新します
+      description: 記事を更新します。
+      operationId: updateArticle
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      security:
+        - cookieAuth: [ ]
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleForm"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleDTO"
+        '400':
+          $ref: "#/components/responses/BadRequestResponse"
+        '401':
+          $ref: "#/components/responses/UnauthorizedResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '404':
+          $ref: "#/components/responses/NotFoundResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    delete:
+      tags: [ articles ]
+      summary: 記事を削除します
+      description: 記事を削除します。
+      operationId: deleteArticle
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      security:
+        - cookieAuth: [ ]
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      responses:
+        '204':
+          description: NoContent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleDTO"
+        '401':
+          $ref: "#/components/responses/UnauthorizedResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '404':
+          $ref: "#/components/responses/NotFoundResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+  /articles/{articleId}/comments:
+    post:
+      tags: [ article-comments ]
+      summary: 記事のコメントを作成します。
+      description: 指定した記事に対するコメントをログインユーザーで作成します
+      operationId: createComment
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleCommentForm"
+      security:
+        - csrfProtectionHeader: [ ]
+        - csrfProtectionCookie: [ ]
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCommentDTO"
+        '400':
+          $ref: "#/components/responses/BadRequestResponse"
+        '401':
+          $ref: "#/components/responses/UnauthorizedResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '404':
+          $ref: "#/components/responses/NotFoundResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
+    get:
+      tags: [ article-comments ]
+      summary: 指定した記事のコメント一覧を取得します
+      description: 指定した記事のコメント一覧を取得します
+      operationId: listArticleComments
+      parameters:
+        - $ref: "#/components/parameters/ArticleId"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleCommentListDTO"
+        '404':
+          $ref: "#/components/responses/NotFoundResponse"
+        '500':
+          $ref: "#/components/responses/InternalServerErrorResponse"
 
 components:
   schemas:
@@ -437,6 +480,16 @@ components:
           minLength: 10
           maxLength: 255
           example: password123
+    UserProfileImageUploadURLDTO:
+      type: object
+      properties:
+        imageUploadUrl:
+          type: string
+          format: uri
+          example: http://localhost:4566/profile-images/user1_20241210T224934Z.png?xxx=yyy
+        imagePath:
+          type: string
+          example: user1_20241210T224934Z.png
     ArticleForm:
       type: object
       required:
