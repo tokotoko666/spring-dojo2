@@ -4,6 +4,7 @@ package com.example.blog.web.controller.user;
 import com.example.blog.api.UsersApi;
 import com.example.blog.model.UserDTO;
 import com.example.blog.model.UserForm;
+import com.example.blog.model.UserProfileImageUploadURLDTO;
 import com.example.blog.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.security.Principal;
 
 @RestController
@@ -49,4 +51,12 @@ public class UserRestController implements UsersApi {
                 .body(dto);
     }
 
+    @Override
+    public ResponseEntity<UserProfileImageUploadURLDTO> getProfileImageUploadURL(String fileName, String contentType, Long contentLength) {
+        return ResponseEntity.ok(
+                new UserProfileImageUploadURLDTO()
+                        .imagePath("dummy-imagePath")
+                        .imageUploadUrl(URI.create("http://localhost:8080/dummy"))
+        );
+    }
 }
