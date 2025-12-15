@@ -1,5 +1,7 @@
 package com.example.blog.service;
 
+import com.example.blog.config.S3Properties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -17,10 +19,13 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class StorageService {
 
+    private final S3Properties s3Properties;
+
     public String createUploadURL(String fileName, String contentType, Long contentLength) {
-        return createPresignedUrl("profile-images", "test-key", Map.of());
+        return createPresignedUrl(s3Properties.bucket().profileImages(), "test-key", Map.of());
     }
 
     // ref. https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/examples-s3-presign.html#put-presigned-object-part1
@@ -31,12 +36,14 @@ public class StorageService {
                         .pathStyleAccessEnabled(true)
                         .build()
                 )
-                .endpointOverride(URI.create("http://localhost:4566"))
+                .endpointOverride(URI.create(s3Properties.endpoint()))
                 .credentialsProvider(StaticCredentialsProvider.create(
-                                AwsBasicCredentials.create("test1", "test2")
+                                AwsBasicCredentials.create(
+                                        s3Properties.accessKey(),
+                                        s3Properties.secretKey())
                         )
                 )
-                .region(Region.AP_NORTHEAST_1);
+                .region(Region.of(s3Properties.region()));
 
         try (S3Presigner presigner = builder.build()) {
 
