@@ -6,10 +6,10 @@ Spring 道場 Blog API
 ``` shell
 $ docker compose up -d
 
-$ docker exec -it localstack /bin/bash
-$ awslocal s3 mb s3://profile-images
-$ awslocal s3 ls
-
 $ ./gradlew flywayMigrate
 $ ./gradlew bootRun
+```
+## Tips: localstack のコンテナに入りたい時
+```shell
+$ docker exec -it localstack /bin/bash
 ```
