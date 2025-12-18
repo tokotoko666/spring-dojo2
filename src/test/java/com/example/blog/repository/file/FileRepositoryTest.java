@@ -1,4 +1,4 @@
-package com.example.blog.service;
+package com.example.blog.repository.file;
 
 import com.example.blog.config.S3PresignerConfig;
 import com.example.blog.config.S3Properties;
@@ -13,15 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringJUnitConfig(
         classes = {
-                StorageService.class,
+                FileRepository.class,
                 S3PresignerConfig.class
         },
         initializers = ConfigDataApplicationContextInitializer.class)
 @EnableConfigurationProperties(S3Properties.class)
-class StorageServiceTest {
+class FileRepositoryTest {
 
     @Autowired
-    private StorageService cut;
+    private FileRepository cut;
     @Autowired
     S3Properties s3Properties;
 
