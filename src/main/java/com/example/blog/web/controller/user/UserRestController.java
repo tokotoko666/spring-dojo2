@@ -55,8 +55,8 @@ public class UserRestController implements UsersApi {
     public ResponseEntity<UserProfileImageUploadURLDTO> getProfileImageUploadURL(String fileName, String contentType, Long contentLength) {
         var uploadURL = userService.createProfileImageUploadURL(fileName, contentType, contentLength);
         var dto = new UserProfileImageUploadURLDTO()
-                .imagePath("dummy")
-                .imageUploadUrl(URI.create(uploadURL));
+                .imagePath(uploadURL.imagePath())
+                .imageUploadUrl(URI.create(uploadURL.uploadURL()));
         return ResponseEntity.ok(dto);
     }
 }

@@ -98,7 +98,7 @@ class UserServiceTest {
 
         // ## Assert ##
         assertThat(actual).isNotNull();
+        assertThat(actual.imagePath()).isNotNull();
+        assertThat(actual.uploadURL()).isNotNull();
     }
-
-
 }
