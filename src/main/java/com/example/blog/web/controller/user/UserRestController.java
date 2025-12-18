@@ -5,7 +5,6 @@ import com.example.blog.api.UsersApi;
 import com.example.blog.model.UserDTO;
 import com.example.blog.model.UserForm;
 import com.example.blog.model.UserProfileImageUploadURLDTO;
-import com.example.blog.repository.file.FileRepository;
 import com.example.blog.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import java.security.Principal;
 public class UserRestController implements UsersApi {
 
     private final UserService userService;
-    private final FileRepository fileRepository;
     private final DuplicateUsernameValidator duplicateUsernameValidator;
 
     @InitBinder
@@ -55,7 +53,7 @@ public class UserRestController implements UsersApi {
 
     @Override
     public ResponseEntity<UserProfileImageUploadURLDTO> getProfileImageUploadURL(String fileName, String contentType, Long contentLength) {
-        var uploadURL = fileRepository.createUploadURL(fileName, contentType, contentLength);
+        var uploadURL = userService.createProfileImageUploadURL(fileName, contentType, contentLength);
         var dto = new UserProfileImageUploadURLDTO()
                 .imagePath("dummy")
                 .imageUploadUrl(URI.create(uploadURL));

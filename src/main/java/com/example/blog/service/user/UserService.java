@@ -1,5 +1,6 @@
 package com.example.blog.service.user;
 
+import com.example.blog.repository.file.FileRepository;
 import com.example.blog.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FileRepository fileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -29,5 +31,9 @@ public class UserService {
     @Transactional(readOnly = true)
     public boolean existsUsername(String username) {
         return userRepository.selectByUsername(username).isPresent();
+    }
+
+    public String createProfileImageUploadURL(String fileName, String contentType, long contentLength) {
+        return fileRepository.createUploadURL(fileName, contentType, contentLength);
     }
 }

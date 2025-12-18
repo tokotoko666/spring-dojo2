@@ -3,6 +3,7 @@ package com.example.blog.service.article;
 import com.example.blog.config.MybatisDefaultDatasourceTest;
 import com.example.blog.config.PasswordEncoderConfig;
 import com.example.blog.repository.article.ArticleRepository;
+import com.example.blog.repository.file.FileRepository;
 import com.example.blog.service.DateTimeService;
 import com.example.blog.service.exception.ResourceNotFoundException;
 import com.example.blog.service.user.UserService;
@@ -35,6 +36,10 @@ class ArticleCommentServiceTest {
 
     @Autowired
     private ArticleCommentService cut;
+
+    // このテストでは不要だが、UserService の初期化に必要なためモックを登録しておく
+    @MockBean
+    private FileRepository mockFileRepository;
 
     @Test
     @DisplayName("create: article_comments テーブルにレコードが insert される")
