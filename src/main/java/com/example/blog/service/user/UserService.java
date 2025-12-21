@@ -39,6 +39,10 @@ public class UserService {
     }
 
     public UserEntity updateProfileImage(String username, String imagePath) {
-        return new UserEntity(1L, username, "hoge", true);
+        var userToUpdate = userRepository.selectByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found:" + username));
+        // userToUpdate.setImagePath() // TODO
+        userRepository.update(userToUpdate);
+        return userToUpdate;
     }
 }

@@ -36,4 +36,7 @@ public interface UserRepository {
             WHERE u.username = #{username}
             """)
     void deleteByUsername(String username);
+
+    // TODO query
+    void update(UserEntity entity);
 }
