@@ -5,6 +5,7 @@ import com.example.blog.service.exception.UnAuthorizedResourceAccessException;
 import com.example.blog.service.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,12 +22,14 @@ import java.util.ArrayList;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public class ExceptionHandlerAdvise {
 
     private final MessageSource messageSource;
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<InternalServerError> handleInternalServerError(RuntimeException e, HttpServletRequest request) {
+        log.error("An unexpected error occurred. Returning InternalServerError to client.", e);
         return ResponseEntity
                 .internalServerError()
                 .contentType(MediaType.APPLICATION_PROBLEM_JSON)
@@ -60,7 +63,7 @@ public class ExceptionHandlerAdvise {
 
         var locale = LocaleContextHolder.getLocale();
         var errorDetailList = new ArrayList<ErrorDetail>();
-        for (final FieldError fieldError: e.getBindingResult().getFieldErrors()) {
+        for (final FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             var pointer = "#/" + fieldError.getField();
             var detail = messageSource.getMessage(fieldError, locale);
 
