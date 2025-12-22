@@ -37,6 +37,13 @@ public interface UserRepository {
             """)
     void deleteByUsername(String username);
 
-    // TODO query
+    @Update("""
+            UPDATE users
+            SET 
+                password = #{password}
+              , enabled = #{enabled}
+            WHERE
+                id = #{id}
+            """)
     void update(UserEntity entity);
 }
