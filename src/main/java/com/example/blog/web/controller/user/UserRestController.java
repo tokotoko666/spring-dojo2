@@ -12,12 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.DataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,11 +26,6 @@ public class UserRestController implements UsersApi {
     @InitBinder(value = "userForm")
     public void initBinder(DataBinder dataBinder) {
         dataBinder.addValidators(duplicateUsernameValidator);
-    }
-
-    @GetMapping("/users/me")
-    public ResponseEntity<String> me(Principal principal) {
-        return ResponseEntity.ok(principal.getName());
     }
 
     @Override
@@ -69,5 +61,11 @@ public class UserRestController implements UsersApi {
         var userDTO = new UserDTO().id(updatedUser.getId()).username(updatedUser.getUsername());
         // TODO set profile image
         return ResponseEntity.ok(userDTO);
+    }
+
+    @Override
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        var body = new UserDTO().id(1L).username("test_username1").imagePath("dummy");
+        return ResponseEntity.ok(body);
     }
 }
