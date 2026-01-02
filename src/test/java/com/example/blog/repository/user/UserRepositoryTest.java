@@ -23,8 +23,8 @@ class UserRepositoryTest {
     @Test
     @DisplayName("selectByUsername: 指定されたユーザー名のユーザーが存在するとき、Optional<UserEntity> を返す")
     @Sql(statements = {
-            "INSERT INTO users (id, username, password, enabled) VALUES(999, 'test_user_1', 'test_user_1_pass', true);",
-            "INSERT INTO users (id, username, password, enabled) VALUES(998, 'test_user_2', 'test_user_2_pass', true);"
+            "INSERT INTO users (id, username, password, enabled, image_path) VALUES(999, 'test_user_1', 'test_user_1_pass', true, 'users/999/profile-image');",
+            "INSERT INTO users (id, username, password, enabled, image_path) VALUES(998, 'test_user_2', 'test_user_2_pass', true, 'users/998/profile-image');"
     })
     void selectByUsername_success() {
         // ## Arrange ##
@@ -36,6 +36,7 @@ class UserRepositoryTest {
             assertThat(actualEntity.getId()).isEqualTo(999);
             assertThat(actualEntity.getUsername()).isEqualTo("test_user_1");
             assertThat(actualEntity.getPassword()).isEqualTo("test_user_1_pass");
+            assertThat(actualEntity.getImagePath()).isEqualTo("users/999/profile-image");
             assertThat(actualEntity.isEnabled()).isTrue();
         });
     }
@@ -69,10 +70,10 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("insert: User を登録することができる")
+    @DisplayName("insert: User を登録することができる。image_path カラムはユーザー登録時には未設定")
     void insert_success() {
         // ## Arrange ##
-        var newRecord = new UserEntity(null, "test_user_1", "test_user_1_pass", true);
+        var newRecord = new UserEntity(null, "test_user_1", "test_user_1_pass", true, null);
 
         // ## Act ##
         cut.insert(newRecord);
@@ -88,6 +89,7 @@ class UserRepositoryTest {
             assertThat(actualEntity.getUsername()).isEqualTo("test_user_1");
             assertThat(actualEntity.getPassword()).isEqualTo("test_user_1_pass");
             assertThat(actualEntity.isEnabled()).isTrue();
+            assertThat(actualEntity.getImagePath()).isNull();
         });
     }
 
@@ -95,8 +97,8 @@ class UserRepositoryTest {
     @DisplayName("update: UserEntity を更新することができる")
     void update_success() {
         // ## Arrange ##
-        var existingUser1 = new UserEntity(1L, "user_1", "password_1", true);
-        var existingUser2 = new UserEntity(2L, "user_2", "password_2", true);
+        var existingUser1 = new UserEntity(1L, "user_1", "password_1", true, "users/1/profile-image");
+        var existingUser2 = new UserEntity(2L, "user_2", "password_2", true, "users/2/profile-image");
         cut.insert(existingUser1);
         cut.insert(existingUser2);
 
@@ -104,7 +106,9 @@ class UserRepositoryTest {
                 existingUser1.getId(),
                 existingUser1.getUsername(),
                 existingUser1.getPassword() + "_updated",
-                !existingUser1.isEnabled());
+                !existingUser1.isEnabled(),
+                existingUser1.getImagePath() + "_updated"
+        );
 
         // ## Act ##
         cut.update(userToUpdate);
@@ -122,7 +126,7 @@ class UserRepositoryTest {
     @DisplayName("update: 更新対象が存在しないときは insert/update がされず、エラーも発生しない")
     void update_nonExistentUser() {
         // ## Arrange ##
-        var existingUser1 = new UserEntity(1L, "user_1", "password_1", true);
+        var existingUser1 = new UserEntity(1L, "user_1", "password_1", true, null);
         cut.insert(existingUser1);
 
         var nonExistenceUser = new UserEntity(
