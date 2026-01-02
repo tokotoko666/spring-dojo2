@@ -1,5 +1,6 @@
 package com.example.blog.web.controller.user;
 
+import com.example.blog.security.LoggedInUser;
 import com.example.blog.service.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,15 +40,18 @@ class UserRestControllerTest {
 
     @Test
     @DisplayName("/users/me: ログインユーザーがアクセスすると、200 OK でユーザー名を返す")
-    @WithMockUser(username = MOCK_USERNAME)
     public void usersMe_return200() throws Exception {
         // ## Arrange ##
-        // ## Assert ##
-        var acutual = mockMvc.perform(MockMvcRequestBuilders.get("/users/me"));
+        var loggedInUser = new LoggedInUser(123L, "test_username1", "test_password1", true);
+        // ## Act ##
+        var acutual = mockMvc.perform(MockMvcRequestBuilders.get("/users/me")
+                .with(user(loggedInUser)));
 
         // ## Assert ##
         acutual.andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(MOCK_USERNAME));
+                .andExpect(jsonPath("$.id").value(loggedInUser.getUserId()))
+                .andExpect(jsonPath("$.username").value(loggedInUser.getUsername()))
+                .andExpect(jsonPath("$.imagePath").value("dummy"));
     }
 
     @Test

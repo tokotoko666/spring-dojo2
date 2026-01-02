@@ -66,7 +66,8 @@ public class UserRestController implements UsersApi {
 
     @Override
     public ResponseEntity<UserDTO> getCurrentUser() {
-        var body = new UserDTO().id(1L).username("test_username1").imagePath("dummy");
+        var loggedInUser = (LoggedInUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var body = new UserDTO().id(loggedInUser.getUserId()).username(loggedInUser.getUsername()).imagePath("dummy");
         return ResponseEntity.ok(body);
     }
 }
